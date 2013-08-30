@@ -12,5 +12,8 @@
     <summary />
     <language>en-US</language>
     <tags>Logging, Framework, Stack</tags>
+    <dependencies>
+      <dependency id="protobuf-net" />
+    </dependencies>
   </metadata>
 </package>
