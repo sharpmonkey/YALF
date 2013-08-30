@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Yalf</id>
+    <version>$version$</version>
+    <title>Yalf</title>
+    <authors>Gregor Pacnik</authors>
+    <owners>Gregor Pacnik</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Yet Another Logging Framework.</description>
+    <summary />
+    <language>en-US</language>
+    <tags>Logging, Framework, Stack</tags>
+  </metadata>
+</package>
