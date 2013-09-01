@@ -26,7 +26,8 @@ namespace Yalf
                     lock (_sync)
                     {
                         var threadId = Thread.CurrentThread.ManagedThreadId;
-                        var threadName = Thread.CurrentThread.Name;
+                        // TODO: No Thread.Name support in PCL
+                        var threadName = string.Empty; //Thread.CurrentThread.Name;
                         _threadInstance = new Log(threadId, threadName);
                         _logs.Add(_threadInstance);
                     }
@@ -69,7 +70,7 @@ namespace Yalf
                 return _logs.Select(l => l.DumpInternal()).ToArray();
         }
 
-        public static byte[] DumpBinary()
+        public static byte[] DumpToBinary()
         {
             BaseEntry[] dump;
             lock (_logs)
@@ -83,26 +84,12 @@ namespace Yalf
             }
         }
 
-        public static string DumpToFile(string fileName = "")
+        public static BaseEntry[] DumpFromBinary(byte[] binary)
         {
-            var data = DumpBinary();
-
-            if (string.IsNullOrEmpty(fileName))
-                fileName = Path.GetTempFileName();
-
-            File.WriteAllBytes(fileName, data);
-
-            return fileName;
-        }
-
-        public static BaseEntry[] DumpFromFile(string fileName)
-        {
-            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+            if (binary == null || binary.Length <= 0)
                 return null;
 
-            var data = File.ReadAllBytes(fileName);
-
-            using (var ms = new MemoryStream(data))
+            using (var ms = new MemoryStream(binary))
             {
                 var entries = Serializer.Deserialize<BaseEntry[]>(ms);
                 return entries;
@@ -125,7 +112,7 @@ namespace Yalf
 
         #region Logging Levels
 
-        public static bool IsInfoEnabled { get { return Enabled && Level.HasFlag(LogLevel.Info); } }
+        public static bool IsInfoEnabled { get { return Enabled && HasBitFlag(Level, LogLevel.Info); } }
 
         public static void Info(string format, params object[] args)
         {
@@ -133,7 +120,7 @@ namespace Yalf
                 Instance.LogInternal(LogLevel.Info, format, args);
         }
 
-        public static bool IsVerboseEnabled { get { return Enabled && Level.HasFlag(LogLevel.Verbose); } }
+        public static bool IsVerboseEnabled { get { return Enabled && HasBitFlag(Level, LogLevel.Verbose); } }
 
         public static void Verbose(string format, params object[] args)
         {
@@ -141,7 +128,7 @@ namespace Yalf
                 Instance.LogInternal(LogLevel.Verbose, format, args);
         }
 
-        public static bool IsDebugEnabled { get { return Enabled && Level.HasFlag(LogLevel.Debug); } }
+        public static bool IsDebugEnabled { get { return Enabled && HasBitFlag(Level, LogLevel.Debug); } }
 
         public static void Debug(string format, params object[] args)
         {
@@ -149,7 +136,7 @@ namespace Yalf
                 Instance.LogInternal(LogLevel.Debug, format, args);
         }
 
-        public static bool IsWarningEnabled { get { return Enabled && Level.HasFlag(LogLevel.Warning); } }
+        public static bool IsWarningEnabled { get { return Enabled && HasBitFlag(Level, LogLevel.Warning); } }
 
         public static void Warning(string format, params object[] args)
         {
@@ -157,7 +144,7 @@ namespace Yalf
                 Instance.LogInternal(LogLevel.Warning, format, args);
         }
 
-        public static bool IsErrorEnabled { get { return Enabled && Level.HasFlag(LogLevel.Error); } }
+        public static bool IsErrorEnabled { get { return Enabled && HasBitFlag(Level, LogLevel.Error); } }
 
         public static void Error(string format, params object[] args)
         {
@@ -165,7 +152,7 @@ namespace Yalf
                 Instance.LogInternal(LogLevel.Error, format, args);
         }
 
-        public static bool IsCustom1Enabled { get { return Enabled && Level.HasFlag(LogLevel.Custom1); } }
+        public static bool IsCustom1Enabled { get { return Enabled && HasBitFlag(Level, LogLevel.Custom1); } }
 
         public static void Custom1(string format, params object[] args)
         {
@@ -173,7 +160,7 @@ namespace Yalf
                 Instance.LogInternal(LogLevel.Custom1, format, args);
         }
 
-        public static bool IsCustom2Enabled { get { return Enabled && Level.HasFlag(LogLevel.Custom2); } }
+        public static bool IsCustom2Enabled { get { return Enabled && HasBitFlag(Level, LogLevel.Custom2); } }
 
         public static void Custom2(string format, params object[] args)
         {
@@ -181,12 +168,17 @@ namespace Yalf
                 Instance.LogInternal(LogLevel.Custom2, format, args);
         }
 
-        public static bool IsCustom3Enabled { get { return Enabled && Level.HasFlag(LogLevel.Custom3); } }
+        public static bool IsCustom3Enabled { get { return Enabled && HasBitFlag(Level, LogLevel.Custom3); } }
 
         public static void Custom3(string format, params object[] args)
         {
             if (IsCustom3Enabled)
                 Instance.LogInternal(LogLevel.Custom3, format, args);
+        }
+
+        private static bool HasBitFlag(LogLevel e, LogLevel other)
+        {
+            return ((e & other) == other);
         }
 
         #endregion
@@ -204,18 +196,20 @@ namespace Yalf
         private class StackEntry
         {
             public readonly string MethodName;
-            private readonly Stopwatch _sw;
+            private readonly DateTime _start;
 
             public StackEntry(string methodName)
             {
                 MethodName = methodName;
-                _sw = Stopwatch.StartNew();
+                _start = DateTime.UtcNow;
             }
 
             public double StopAndGetDuration()
             {
-                _sw.Stop();
-                return (1000.0 * _sw.ElapsedTicks) / Stopwatch.Frequency;
+                var stop = DateTime.UtcNow;
+                var duration = stop - _start;
+                // guard against clock sync adjustment
+                return Math.Max(0, duration.TotalMilliseconds);
             }
         }
 

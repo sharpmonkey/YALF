@@ -23,7 +23,7 @@ namespace Yalf.Tests
         }
 
         [Test]
-        public void Test_Record_Write_Read_Display()
+        public void Test_Record_Binary_Display()
         {
             var algo = new TestAlgo();
 
@@ -35,16 +35,13 @@ namespace Yalf.Tests
             {
             }
 
-            var file = Log.DumpToFile();
+            var data = Log.DumpToBinary();
 
-            var context = Log.DumpFromFile(file);
-
-            File.Delete(file);
+            var context = Log.DumpFromBinary(data);
 
             var output = LogPrinter.Print(context);
 
             Console.WriteLine(output);
         }
-
     }
 }
