@@ -42,7 +42,7 @@ namespace Yalf.Tests.Helpers
 
         private static string PrintExceptionTrace(ExceptionTrace entry, int level)
         {
-            var str = string.Format("[Exception] {0:dd/MM/yyyy HH:mm:ss.fff} {1}", entry.Time, entry.Exception.Message);
+            var str = string.Format("[Exception] {0:dd/MM/yyyy HH:mm:ss.fff} {1}", entry.Time, entry.Message);
 
             return Indent(level) + str + Environment.NewLine;
         }

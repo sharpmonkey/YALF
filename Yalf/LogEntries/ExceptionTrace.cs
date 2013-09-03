@@ -8,26 +8,21 @@ namespace Yalf.LogEntries
     {
         [ProtoMember(1)]
         public readonly DateTime Time;
-        [ProtoMember(2, DynamicType = true)]
-        private readonly object _exception;
-
-        public Exception Exception
-        {
-            get
-            {
-                if (_exception == null)
-                    return null;
-
-                return _exception as Exception;
-            }
-        }
+        [ProtoMember(2)]
+        public readonly string Message;
+        [ProtoMember(3)]
+        public readonly string Type;
+        [ProtoMember(4)]
+        public readonly string StackTrace;
 
         private ExceptionTrace() { }
 
         public ExceptionTrace(Exception ex, DateTime time)
         {
             Time = time;
-            _exception = ex;
+            Message = ex.Message;
+            Type = ex.GetType().FullName;
+            StackTrace = ex.StackTrace;
         }
     }
 }
