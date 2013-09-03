@@ -20,6 +20,11 @@ namespace Yalf.TestAssembly
             if (Equals(item, default(T)))
                 return;
         }
+
+        public bool ReferenceParams(int intValue, ref int intRefValue, ref double dblRefValue, ref string strRefValue, ref object objRefValue)
+        {
+            return intValue == intRefValue && dblRefValue > 0 && !string.IsNullOrEmpty(strRefValue) && objRefValue != null;
+        }
     }
 
     public class ClassWithFieldsOnlyInitializedInDeclaration

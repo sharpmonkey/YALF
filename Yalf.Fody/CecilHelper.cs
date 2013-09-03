@@ -35,15 +35,90 @@ namespace Yalf.Fody
             return instructionAfter;
         }
 
-        public static Instruction AppendBoxIfNecessary(this Instruction instruction, ILProcessor processor,
+        public static Instruction AppendBoxAndResolveRefIfNecessary(this Instruction instruction, ILProcessor processor,
             TypeReference typeReference)
         {
-            if (typeReference.IsValueType || typeReference.IsGenericParameter)
+
+            // some of the following code is partially based on IL injection blog post from Girish Jain
+            if (typeReference.IsByReference)
             {
+                // it might throw an exception, prefer for weaving to fail in such case
+                var referencedTypeSpec = (TypeSpecification)typeReference;
+
+                var byRefLoadOpCode = GetByRefLoadOpCode(referencedTypeSpec.ElementType.MetadataType);
+
+                if (byRefLoadOpCode.HasValue)
+                {
+                    return instruction
+                        .Append(processor.Create(byRefLoadOpCode.Value), processor)
+                        .Append(processor.Create(OpCodes.Box, referencedTypeSpec.ElementType), processor);
+                }
+                else if (referencedTypeSpec.ElementType.IsValueType)
+                {
+                    // no "known" mapping from referenced metadata type
+                    // check if we have value type and default to Ldobj
+                    return instruction
+                        .Append(processor.Create(OpCodes.Ldobj, referencedTypeSpec.ElementType), processor)
+                        .Append(processor.Create(OpCodes.Box, referencedTypeSpec.ElementType), processor);
+                }
+
+                // It is a ref reference type so just use reference the pointer
+                return instruction.Append(processor.Create(OpCodes.Ldind_Ref), processor);
+            } 
+            else if (typeReference.IsValueType || typeReference.IsGenericParameter)
+            {
+                // If it is a value type then you need to box the instance as we are going 
+                // to add it to an array which is of type object (reference type)
+                // ------------------------------------------------------------
+
+                // Box the parameter type
                 return instruction.Append(processor.Create(OpCodes.Box, typeReference), processor);
             }
 
             return instruction;
+        }
+
+        private static OpCode? GetByRefLoadOpCode(MetadataType referencedMetadataType)
+        {
+            switch (referencedMetadataType)
+            {
+                case MetadataType.Boolean:
+                case MetadataType.SByte:
+                    return OpCodes.Ldind_I1;
+
+                case MetadataType.Int16:
+                    return OpCodes.Ldind_I2;
+
+                case MetadataType.Int32:
+                    return OpCodes.Ldind_I4;
+
+                case MetadataType.Int64:
+                case MetadataType.UInt64:
+                    return OpCodes.Ldind_I8;
+
+                case MetadataType.Byte:
+                    return OpCodes.Ldind_U1;
+
+                case MetadataType.UInt16:
+                case MetadataType.Char:
+                    return OpCodes.Ldind_U2;
+
+                case MetadataType.UInt32:
+                    return OpCodes.Ldind_U4;
+
+                case MetadataType.Single:
+                    return OpCodes.Ldind_R4;
+
+                case MetadataType.Double:
+                    return OpCodes.Ldind_R8;
+
+                case MetadataType.IntPtr:
+                case MetadataType.UIntPtr:
+                    return OpCodes.Ldind_I;
+
+                default:
+                    return null;
+            }
         }
 
         public static Instruction AppendDebugWrite(this Instruction instruction, ILProcessor processor, string message,

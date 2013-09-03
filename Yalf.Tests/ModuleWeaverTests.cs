@@ -180,5 +180,26 @@ namespace Yalf.Tests
 
             Console.WriteLine(output);
         }
+
+        [Test]
+        public void Test_Signatures_RefParams()
+        {
+            var ilsignatures = WeaverHelper.CreateInstance<Yalf.TestAssembly.TestSignatures>(assembly);
+
+            int intValue = 1;
+            double dblValue = 0.1;
+            string strValue = "value";
+            object objValue = new object();
+
+            var compare = ilsignatures.ReferenceParams(1, ref intValue, ref dblValue, ref strValue, ref objValue);
+
+            var context = Log.DumpInMemory();
+
+            var output = LogPrinter.Print(context);
+
+            Console.WriteLine(output);
+
+            Assert.IsTrue(compare);
+        }
     }
 }

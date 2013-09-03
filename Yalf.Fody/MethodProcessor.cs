@@ -288,14 +288,31 @@ namespace Yalf.Fody
             {
                 current = current
                     .AppendLdloc(processor, objectParamsArrayIndex)
-                    .AppendLdcI4(processor, i)
-                    .AppendLdarg(processor, i + nonStaticMethodAddOne)
-                    .AppendBoxIfNecessary(processor, method.Parameters[i].ParameterType)
-                    .Append(processor.Create(OpCodes.Stelem_Ref), processor);
+                    .AppendLdcI4(processor, i);
+
+                var paramType = method.Parameters[i].ParameterType;
+
+                if (paramType.MetadataType == MetadataType.UIntPtr ||
+                    paramType.MetadataType == MetadataType.FunctionPointer ||
+                    paramType.MetadataType == MetadataType.IntPtr ||
+                    paramType.MetadataType == MetadataType.Pointer)
+                {
+                    // don't store pointer types into object[] (we can't ToString them anyway)
+                    // store type name as string instead
+                    current = current.AppendLdstr(processor, paramType.FullName);
+                }
+                else
+                {
+                    current = current
+                        .AppendLdarg(processor, i + nonStaticMethodAddOne)
+                        .AppendBoxAndResolveRefIfNecessary(processor, paramType);
+                }
+
+                current = current.Append(processor.Create(OpCodes.Stelem_Ref), processor);
             }
 
             // Call Log.MethodContext
-            current = current
+            current
                 .AppendLdloc(processor, objectParamsArrayIndex)
                 .Append(processor.Create(OpCodes.Call, references.MethodContextMethod), processor)
                 .AppendStloc(processor, contextVar.Index);
