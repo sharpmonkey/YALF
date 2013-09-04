@@ -166,7 +166,25 @@ namespace Yalf.Tests
             Assert.That(equal, Is.True);
         }
 
+        [Test]
+        public void Test_GenericTypeWithGenericMethodWithGenericArguments()
+        {
+            var list = new List<bool> {true, false, false};
+            var generic = new TestGenericClass<int>();
+            var value = generic.GenericMethod(list);
+            var output = GetOutput();
 
+
+            var ilgeneric = WeaverHelper.CreateInstance<Yalf.TestAssembly.TestGenericClass<int>>(assembly);
+            var ilvalue = ilgeneric.GenericMethod(list);
+            var iloutput = GetOutput();
+
+            Console.WriteLine(iloutput);
+
+            Assert.That(iloutput, Is.EqualTo(output));
+            Assert.That(ilvalue, Is.EqualTo(value));
+            Assert.IsTrue(iloutput.Contains("(List<Boolean>)"), "expected (List<Boolean>) in output");
+        }
         [Test]
         public void Test_BackgroundThread()
         {

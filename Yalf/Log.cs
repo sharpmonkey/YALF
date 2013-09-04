@@ -258,15 +258,38 @@ namespace Yalf
 
         #region Scope/Method tracing
 
-        private static string FormatArgument(object arg)
+        private static string FormatType(Type type)
         {
-            if (arg == null)
-                return "<null>";
+            if (type.IsGenericType)
+                return string.Format("{0}<{1}>", type.Name.Split('`')[0], string.Join(", ", type.GetGenericArguments().Select(FormatType).ToArray()));
+            else
+                return type.Name;
+        }
 
-            if (arg.GetType().IsArray)
-                return arg.GetType().ToString();
+        private static string FormatValue(object arg)
+        {
+            try
+            {
+                if (arg == null)
+                    return "<null>";
 
-            return arg.ToString();
+                if (arg.GetType().IsArray)
+                {
+                    var arrayType = FormatType(arg.GetType());
+                    return string.Format("{0}[{1}]", arrayType.Substring(0, arrayType.Length - 2), ((Array) arg).Length);
+                }
+
+                var argAsString = arg.ToString();
+                // TODO: cleanup this check for generic type (faster, prettier?)
+                if (argAsString.IndexOf('`') >= 0 && argAsString == arg.GetType().ToString())
+                    return FormatType(arg.GetType());
+
+                return argAsString;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         private IContext MethodContextInternal(string methodName, params object[] args)
@@ -276,7 +299,7 @@ namespace Yalf
             {
                 strArgs = new string[args.Length];
                 for (int i = 0; i < args.Length; i++)
-                    strArgs[i] = FormatArgument(args[i]);
+                    strArgs[i] = FormatValue(args[i]);
             }
             var entry = new MethodEntry(_methodStack.Count, methodName, strArgs, DateTime.Now);
             Record(entry);
@@ -290,7 +313,8 @@ namespace Yalf
         {
             var stackEntry = _methodStack.Pop();
             var duration = stackEntry.StopAndGetDuration();
-            var returnValue = recorded && value != null ? value.ToString() : string.Empty;
+
+            var returnValue = recorded ? FormatValue(value) : string.Empty;
 
             var entry = new MethodExit(_methodStack.Count, stackEntry.MethodName, duration, recorded, returnValue);
 

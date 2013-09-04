@@ -268,9 +268,10 @@ namespace Yalf.Fody
             // Generate MethodContext calling method name
             var builder = new StringBuilder();
 
-            builder.Append(method.DeclaringType.FullName);
-            builder.Append(".");
-            builder.Append(method.Name);
+            builder.Append(string.Join(".", 
+                method.DeclaringType.Namespace, 
+                FormatType(method.DeclaringType), 
+                FormatMethod(method)));
 
             var current = firstInstruction
                 .Prepend(processor.Create(OpCodes.Ldstr, builder.ToString()), processor);
@@ -316,6 +317,27 @@ namespace Yalf.Fody
                 .AppendLdloc(processor, objectParamsArrayIndex)
                 .Append(processor.Create(OpCodes.Call, references.MethodContextMethod), processor)
                 .AppendStloc(processor, contextVar.Index);
+        }
+
+        /// <summary>
+        /// Neatly format type/class output if it's generic.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static string FormatType(TypeReference type)
+        {
+            if (type.HasGenericParameters)
+                return string.Format("{0}<{1}>", type.Name.Split('`')[0], string.Join(", ", type.GenericParameters.Select(FormatType)));
+            else
+                return type.Name;
+        }
+
+        private static string FormatMethod(MethodReference m)
+        {
+            if (m.HasGenericParameters)
+                return string.Format("{0}<{1}>", m.Name.Split('`')[0], string.Join(", ", m.GenericParameters.Select(FormatType)));
+            else
+                return m.Name;
         }
 
         /// <summary>

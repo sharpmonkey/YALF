@@ -66,4 +66,26 @@ namespace Yalf.Sample
             } 
         }
     }
+
+    public class TestGenericClass<T>
+    {
+        public TU GenericMethod<TU>(TU value)
+        {
+            var context = Log.MethodContext("Yalf.TestAssembly.TestGenericClass<T>.GenericMethod<TU>", value);
+            try
+            {
+                return context.RecordReturn(value);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceException(ex);
+                throw;
+            }
+            finally
+            {
+                context.Dispose();
+            } 
+
+        }
+    }
 }

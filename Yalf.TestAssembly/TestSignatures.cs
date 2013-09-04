@@ -54,8 +54,13 @@ namespace Yalf.TestAssembly
                 context.Dispose();
             }
         }
+    }
 
-
-
+    public class TestGenericClass<T>
+    {
+        public TU GenericMethod<TU>(TU value)
+        {
+                return value;
+        }
     }
 }
