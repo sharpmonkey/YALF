@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -39,8 +38,16 @@ namespace Yalf
         #endregion
 
         #region Shared settings
-
+        /// <summary>Turns logging on or off.  Also see <see cref="EnableParameterLogging"/> and <see cref="EnableReturnValueLogging"/> properties for full logging options.</summary>
         public static bool Enabled { get; set; }
+        /// <summary>Turn parameter logging on (off by default).  If true, the method parameter values are serialised and stored in the yalf log.</summary>
+        /// <remarks>Logging of parameters involves serialisation to <see cref="System.String"/> which can cause performance issues for some complex types.</remarks>
+        public static bool EnableParameterLogging { get; set; }
+        /// <summary>Turn return value logging on (off by default).  If true, the method return value is serialised (if applicable) and stored in the yalf log.</summary>
+        /// <remarks>Logging of return values involves serialisation to <see cref="System.String"/> which can cause performance issues for some complex types.</remarks>
+        public static bool EnableReturnValueLogging { get; set; }
+
+        //public static bool Enabled { get; set; }
         public static LogLevel Level { get; set; }
         public static int MaxEntryCount { get; set; }
 
@@ -223,8 +230,8 @@ namespace Yalf
             _threadName = threadName;
 
             _methodStack = new Stack<StackEntry>();
-            var size = Math.Max(0, MaxEntryCount);
-            _queue = new Queue<BaseEntry>(size);
+            var initialSize = Math.Min(1024, MaxEntryCount);  // don't make this too big, or yalf clags the app trying to initialise the queue!
+            _queue = new Queue<BaseEntry>(initialSize);
         }
 
         private void Record(BaseEntry entry)
@@ -272,12 +279,9 @@ namespace Yalf
         private IContext MethodContextInternal(string methodName, params object[] args)
         {
             string[] strArgs = null;
-            if (args != null)
-            {
-                strArgs = new string[args.Length];
-                for (int i = 0; i < args.Length; i++)
-                    strArgs[i] = FormatArgument(args[i]);
-            }
+            if (Log.EnableParameterLogging && (args != null))
+                    strArgs = GetSerialisedArguments(args);
+
             var entry = new MethodEntry(_methodStack.Count, methodName, strArgs, DateTime.Now);
             Record(entry);
 
@@ -286,11 +290,22 @@ namespace Yalf
             return new ContextScope(MethodExit);
         }
 
+        private static string[] GetSerialisedArguments(object[] args)
+        {
+            string[] stringValues = new string[args.Length];
+            for (int i = 0; i < args.Length; i++)
+                stringValues[i] = FormatArgument(args[i]);
+            return stringValues;
+        }
+
         private void MethodExit(object value, bool recorded)
         {
             var stackEntry = _methodStack.Pop();
             var duration = stackEntry.StopAndGetDuration();
-            var returnValue = recorded && value != null ? value.ToString() : string.Empty;
+            
+            var returnValue = string.Empty;
+            if (Log.EnableReturnValueLogging && recorded && (value != null))
+                returnValue = value.ToString();
 
             var entry = new MethodExit(_methodStack.Count, stackEntry.MethodName, duration, recorded, returnValue);
 
