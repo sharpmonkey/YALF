@@ -29,12 +29,14 @@ namespace Yalf.Tests
             Log.Level = LogLevel.Info;
             Log.MaxEntryCount = 100;
             Log.Enabled = true;
+            Log.EnableParameterLogging = true;
+            Log.EnableReturnValueLogging = true;
         }
 
         [Test, Ignore]
         public void Weave_CustomAssembly_WeavesCorrectIL()
         {
-            var path = Path.GetFullPath(@"..\..\..\..\GraphDhtDatabase\GraphDht\bin\Debug\GraphDht.dll");
+            var path = Path.GetFullPath(@"..\path\to\your\assembly.dll");
             var customAssembly = WeaverHelper.WeaveAssembly(path);
             var assemblyPath = customAssembly.CodeBase.Remove(0, 8);
             var result = Verifier.Verify(assemblyPath);

@@ -60,7 +60,7 @@ namespace Yalf.TestAssembly
     {
         public TU GenericMethod<TU>(TU value)
         {
-                return value;
+            return value;
         }
     }
 }
