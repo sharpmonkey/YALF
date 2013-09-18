@@ -39,7 +39,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>yalf.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>yalf.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="protobuf-net, Version=2.0.0.640, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
@@ -70,10 +70,23 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="LogEntries\ThreadData.cs" />
+    <Compile Include="Reporting\FilterableLogEntryList.cs" />
+    <Compile Include="Reporting\Formatters\DelimitedValuesFormatter.cs" />
+    <Compile Include="Reporting\Formatters\DefaultFormatter.cs" />
+    <Compile Include="Reporting\Formatters\ILogFormatter.cs" />
+    <Compile Include="Reporting\Formatters\SingleLineFormatter.cs" />
+    <Compile Include="Reporting\ILogFilters.cs" />
+    <Compile Include="Reporting\LogFiltersBuilder.cs" />
+    <Compile Include="Reporting\MethodLogInformation.cs" />
+    <Compile Include="Reporting\OutputHandlers\DefaultOutputHandler.cs" />
+    <Compile Include="Reporting\OutputHandlers\ILogOutputHandler.cs" />
+    <Compile Include="Reporting\IFilterableLogEntryList.cs" />
+    <Compile Include="Reporting\LogReporter.cs" />
+    <Compile Include="Reporting\LogFilters.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="yalf.pfx" />
+    <None Include="yalf.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

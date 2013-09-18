@@ -39,7 +39,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Yalf\yalf.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Yalf\yalf.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfo.cs">
@@ -75,6 +75,42 @@
     <Compile Include="..\Yalf\NoLogAttribute.cs">
       <Link>NoLogAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\Yalf\Reporting\FilterableLogEntryList.cs">
+      <Link>Reporting\FilterableLogEntryList.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\DefaultFormatter.cs">
+      <Link>Reporting\Formatters\DefaultFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\DelimitedValuesFormatter.cs">
+      <Link>Reporting\Formatters\DelimitedValuesFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\ILogFormatter.cs">
+      <Link>Reporting\Formatters\ILogFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\SingleLineFormatter.cs">
+      <Link>Reporting\Formatters\SingleLineFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\IFilterableLogEntryList.cs">
+      <Link>Reporting\IFilterableLogEntryList.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\ILogFilters.cs">
+      <Link>Reporting\ILogFilters.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\LogFilters.cs">
+      <Link>Reporting\LogFilters.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\LogFiltersBuilder.cs">
+      <Link>Reporting\LogFiltersBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\LogReporter.cs">
+      <Link>Reporting\LogReporter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\OutputHandlers\DefaultOutputHandler.cs">
+      <Link>Reporting\OutputHandlers\DefaultOutputHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\OutputHandlers\ILogOutputHandler.cs">
+      <Link>Reporting\OutputHandlers\ILogOutputHandler.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="protobuf-net">
@@ -82,8 +118,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Yalf\yalf.pfx">
-      <Link>yalf.pfx</Link>
+    <None Include="..\Yalf\yalf.snk">
+      <Link>yalf.snk</Link>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

@@ -59,6 +59,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Reporting\DelimitedValuesFormatterTests.cs" />
+    <Compile Include="Reporting\DefaultFormatterTests.cs" />
+    <Compile Include="Reporting\DefaultOutputHandlerTests.cs" />
+    <Compile Include="Reporting\SingleLineFormatterTests.cs" />
     <Compile Include="IOTests.cs" />
     <Compile Include="Helpers\LogPrinter.cs" />
     <Compile Include="Helpers\MockAssemblyResolver.cs" />
