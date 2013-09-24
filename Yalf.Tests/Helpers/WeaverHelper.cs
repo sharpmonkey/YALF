@@ -32,7 +32,12 @@ namespace Yalf.Tests.Helpers
             return Activator.CreateInstance(type, parameters);
         }
 
-        public static Assembly WeaveAssembly(string assemblyPath = null)
+        public static Assembly WeaveAssembly(int uniqueId)
+        {
+            return WeaveAssembly(uniqueId, null);
+        }
+
+        public static Assembly WeaveAssembly(int uniqueId, string assemblyPath)
         {
             if(string.IsNullOrEmpty(assemblyPath))
                 assemblyPath = Path.GetFullPath("Yalf.TestAssembly.dll");
@@ -42,11 +47,11 @@ namespace Yalf.Tests.Helpers
             //#endif
 
 
-            string newAssembly = assemblyPath.Replace(".dll", "2.dll");
+            string newAssembly = assemblyPath.Replace(".dll", string.Format("{0}.dll", uniqueId));
             File.Copy(assemblyPath, newAssembly, true);
 
             var oldPdb = assemblyPath.Replace(".dll", ".pdb");
-            var newPdb = assemblyPath.Replace(".dll", "2.pdb");
+            var newPdb = assemblyPath.Replace(".dll", string.Format("{0}.pdb", uniqueId));
             File.Copy(oldPdb, newPdb, true);
 
 

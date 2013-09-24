@@ -19,8 +19,9 @@ namespace Yalf.Tests
         [TestFixtureSetUp]
         public static void ClassInitialize()
         {
-            assembly = WeaverHelper.WeaveAssembly();
+            assembly = WeaverHelper.WeaveAssembly(10);
         }
+
 
         [SetUp]
         public void Setup()
@@ -37,7 +38,7 @@ namespace Yalf.Tests
         public void Weave_CustomAssembly_WeavesCorrectIL()
         {
             var path = Path.GetFullPath(@"..\path\to\your\assembly.dll");
-            var customAssembly = WeaverHelper.WeaveAssembly(path);
+            var customAssembly = WeaverHelper.WeaveAssembly(11, path);
             var assemblyPath = customAssembly.CodeBase.Remove(0, 8);
             var result = Verifier.Verify(assemblyPath);
 

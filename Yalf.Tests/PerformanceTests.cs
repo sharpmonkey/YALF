@@ -17,7 +17,7 @@ namespace Yalf.Tests
         [TestFixtureSetUp]
         public static void ClassInitialize()
         {
-            assembly = WeaverHelper.WeaveAssembly();
+            assembly = WeaverHelper.WeaveAssembly(22);
         }
 
         [Test]
