@@ -57,8 +57,8 @@
     <Compile Include="..\Yalf\LogEntries\ExceptionTrace.cs">
       <Link>LogEntries\ExceptionTrace.cs</Link>
     </Compile>
-    <Compile Include="..\Yalf\LogEntries\LogEntry.cs">
-      <Link>LogEntries\LogEntry.cs</Link>
+    <Compile Include="..\Yalf\LogEntries\LogEvent.cs">
+      <Link>LogEntries\LogEvent.cs</Link>
     </Compile>
     <Compile Include="..\Yalf\LogEntries\MethodEntry.cs">
       <Link>LogEntries\MethodEntry.cs</Link>
@@ -127,7 +127,7 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

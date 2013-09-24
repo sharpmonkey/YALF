@@ -4,7 +4,7 @@ namespace Yalf.LogEntries
 {
     [ProtoContract]
     [ProtoInclude(101, typeof(ExceptionTrace))]
-    [ProtoInclude(102, typeof(LogEntry))]
+    [ProtoInclude(102, typeof(LogEvent))]
     [ProtoInclude(103, typeof(MethodEntry))]
     [ProtoInclude(104, typeof(MethodExit))]
     [ProtoInclude(105, typeof(ThreadData))]

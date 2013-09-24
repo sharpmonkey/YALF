@@ -13,7 +13,7 @@ namespace Yalf.Reporting.OutputHandlers
        void HandleMethodEntry(MethodEntry entry, int indentLevel, bool displayEnabled);
        void HandleMethodExit(MethodExit entry, int indentLevel, bool displayEnabled);
        void HandleException(ExceptionTrace entry, int indentLevel);
-       void HandleLogEvent(LogEntry entry, int indentLevel, bool displayEnabled);
+       void HandleLogEvent(LogEvent entry, int indentLevel, bool displayEnabled);
 
        void Complete();
        

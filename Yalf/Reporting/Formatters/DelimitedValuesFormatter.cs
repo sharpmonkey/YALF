@@ -12,6 +12,12 @@ namespace Yalf.Reporting.Formatters
         public DelimitedValuesFormatter() : this(DefaultFormatter.DefaultIndentChar, DefaultFormatter.DefaultDateTimeFormat, "Yalf", DefaultDelimiter)
         {}
 
+
+        public DelimitedValuesFormatter(String logContext, String delimiter)
+            : this(DefaultFormatter.DefaultIndentChar, DefaultFormatter.DefaultDateTimeFormat, logContext, delimiter)
+        {
+        }
+
         public DelimitedValuesFormatter(Char indentChar, String dateTimeFormatText, String logContext, String delimiter)
         {
             _default = new DefaultFormatter(indentChar, dateTimeFormatText);
@@ -42,14 +48,14 @@ namespace Yalf.Reporting.Formatters
             throw new NotImplementedException("There is no specific format for a thread data entry in a delimited list format, the thread id is included in the other log entry lines.");
         }
 
-        public string FormatMethodEntry(int threadId, int level, MethodEntry logEntry, ILogFilters filters)
+        public string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters)
         {
             // entry details are merged with exit details
             _lastMethodEntry = logEntry;
             return null;
         }
 
-        public string FormatMethodExit(int threadId, int level, MethodExit logEntry, ILogFilters filters)
+        public string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
         {
             if (_lastMethodEntry == null)
                 throw new InvalidOperationException(String.Concat("No related Method Entry log has been set for '{0}' - there could be a problem with the yalf logs.", logEntry.MethodName));
@@ -60,12 +66,12 @@ namespace Yalf.Reporting.Formatters
             return this.BuildOutputLine("Method", logEntry.MethodName, returnValue, _lastMethodEntry.Time, logEntry.ElapsedMs, level, threadId);
         }
 
-        public string FormatException(int threadId, int level, ExceptionTrace logEntry, ILogFilters filters)
+        public string FormatException(int threadId, int level, int lineNo, ExceptionTrace logEntry, ILogFilters filters)
         {
             return this.BuildOutputLine("Exception", logEntry.Message, logEntry.StackTrace, logEntry.Time, 0, level, threadId);
         }
 
-        public string FormatLogEvent(int threadId, int level, LogEntry logEntry, ILogFilters filters)
+        public string FormatLogEvent(int threadId, int level, int lineNo, LogEvent logEntry, ILogFilters filters)
         {
             return this.BuildOutputLine("Log", logEntry.Message, "", logEntry.Time, 0, level, threadId);
         }

@@ -153,7 +153,7 @@ namespace Yalf.Tests.Reporting
             // Arrange
             var filters = this.GetDefaultFilters();
             var output = new DefaultOutputHandler(filters);
-            var entry = new LogEntry(LogLevel.Info, DateTime.Parse("2022-10-22 22:22:31.678"), "This is a log entry");
+            var entry = new LogEvent(LogLevel.Info, DateTime.Parse("2022-10-22 22:22:31.678"), "This is a log entry");
 
             var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Log] [Info] This is a log entry", Environment.NewLine);
             output.Initialise();

@@ -20,6 +20,10 @@ namespace Yalf.Reporting
         public DateTime TimeStampFrom { get; private set; }
         public DateTime TimeStampTo { get; private set; }
 
+        private LogFilters()
+        {
+        }
+
         public LogFilters(IEnumerable<string> includedKeysExpressionList,
         IEnumerable<string> excludedKeysExpressionList,
         bool ignoreCaseInFilter,

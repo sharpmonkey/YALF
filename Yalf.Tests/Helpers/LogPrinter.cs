@@ -27,9 +27,9 @@ namespace Yalf.Tests.Helpers
                 {
                     sb.Append(PrintMethodExit((MethodExit)entry, --level));
                 }
-                else if (type == typeof(LogEntry))
+                else if (type == typeof(LogEvent))
                 {
-                    sb.Append(PrintLogEntry((LogEntry)entry, level));
+                    sb.Append(PrintLogEntry((LogEvent)entry, level));
                 }
                 else if (type == typeof(ExceptionTrace))
                 {
@@ -47,7 +47,7 @@ namespace Yalf.Tests.Helpers
             return Indent(level) + str + Environment.NewLine;
         }
 
-        private static string PrintLogEntry(LogEntry entry, int level)
+        private static string PrintLogEntry(LogEvent entry, int level)
         {
             var str = string.Format("[Log] [{0}] {1}", entry.Level, entry.Message);
 

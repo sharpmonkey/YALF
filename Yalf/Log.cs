@@ -379,7 +379,7 @@ namespace Yalf
 
         public void LogInternal(LogLevel level, string format, params object[] args)
         {
-            var entry = new LogEntry(level, DateTime.Now, string.Format(format, args));
+            var entry = new LogEvent(level, DateTime.Now, string.Format(format, args));
 
             Record(entry);
         }

@@ -30,8 +30,8 @@ namespace Yalf.Reporting
             this.SingleLineFormat = filters.SingleLineFormat;
         }
 
-        public IList<string> IncludedKeysExpressionList { get; set; }
-        public IList<string> ExcludedKeysExpressionList { get; set; }
+        public List<string> IncludedKeysExpressionList { get; set; }
+        public List<string> ExcludedKeysExpressionList { get; set; }
         public bool IgnoreCaseInFilter { get; set; }
 
         public bool HideEnterMethodLogs { get; set; }
@@ -126,13 +126,13 @@ namespace Yalf.Reporting
             return this;
         }
 
-        public LogFiltersBuilder IncludeTheseMethodNames(IList<string> includeExpressions)
+        public LogFiltersBuilder IncludeTheseMethodNames(IEnumerable<string> includeExpressions)
         {
             this.IncludedKeysExpressionList = includeExpressions.ToList();
             return this;
         }
 
-        public LogFiltersBuilder ExcludeTheseMethodNames(IList<string> excludeExpressions)
+        public LogFiltersBuilder ExcludeTheseMethodNames(IEnumerable<string> excludeExpressions)
         {
             this.ExcludedKeysExpressionList = excludeExpressions.ToList();
             return this;

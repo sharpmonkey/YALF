@@ -62,7 +62,7 @@
     <Compile Include="LogEntries\ExceptionTrace.cs" />
     <Compile Include="LogEntries\BaseEntry.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="LogEntries\LogEntry.cs" />
+    <Compile Include="LogEntries\LogEvent.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="LogEntries\MethodEntry.cs" />
     <Compile Include="LogEntries\MethodExit.cs" />

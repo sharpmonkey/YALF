@@ -35,7 +35,7 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
 
             // Act
-            var outputText = formatter.FormatMethodEntry(1, 2, entry, filters);
+            var outputText = formatter.FormatMethodEntry(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(outputText, Is.Null, "Expected nothing to be returned for a method entry, everything is printed in the methodExit handling.");
@@ -51,10 +51,10 @@ namespace Yalf.Tests.Reporting
             var expectedText = "Yalf,Method,Yalf.TestMethod,returnVal,22:22:31.678,345,2,1";
 
             var relatedEntry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var outputText = formatter.FormatMethodExit(1, 2, entry, filters);
+            var outputText = formatter.FormatMethodExit(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -71,10 +71,10 @@ namespace Yalf.Tests.Reporting
             var expectedText = "Yalf,Method,Yalf.TestMethod,,22:22:31.678,345,2,1";
 
             var relatedEntry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var outputText = formatter.FormatMethodExit(1, 2, entry, filters);
+            var outputText = formatter.FormatMethodExit(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -91,10 +91,10 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
 
             var relatedEntry = new MethodEntry(1, "Yalf.DifferentMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExit(1, 2, entry, filters);
+            var outputText = formatter.FormatMethodExit(1, 2, 33, entry, filters);
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
@@ -106,7 +106,7 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExit(1, 2, entry, filters);
+            var outputText = formatter.FormatMethodExit(1, 2, 33, entry, filters);
         }
 
 
@@ -116,12 +116,12 @@ namespace Yalf.Tests.Reporting
             // Arrange
             var filters = this.GetDefaultFilters();
             var formatter = new DelimitedValuesFormatter();
-            var entry = new LogEntry(LogLevel.Info, DateTime.Parse("2022-10-22 22:22:31.678"), "This is a log entry");
+            var entry = new LogEvent(LogLevel.Info, DateTime.Parse("2022-10-22 22:22:31.678"), "This is a log entry");
 
             var expectedText = "Yalf,Log,This is a log entry,,22:22:31.678,0,1,22";
 
             // Act
-            var outputText = formatter.FormatLogEvent(22, 1, entry, filters);
+            var outputText = formatter.FormatLogEvent(22, 1, 33, entry, filters);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -141,7 +141,7 @@ namespace Yalf.Tests.Reporting
             expectedText = expectedText.Replace(@"d:\repositories\yalf", this.GetRootFolder());
 
             // Act
-            var outputText = formatter.FormatException(22, 1, entry, filters);
+            var outputText = formatter.FormatException(22, 1, 33, entry, filters);
 
             // Assert
             outputText = Regex.Replace(outputText, @"DelimitedValuesFormatterTests\.cs\:line [0-9]+,", "DelimitedValuesFormatterTests.cs:line xxx,");

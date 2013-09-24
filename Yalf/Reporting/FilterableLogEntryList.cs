@@ -69,10 +69,10 @@ namespace Yalf.Reporting
                     if ((entry as MethodEntry).Time < startTime) startTime = (entry as MethodEntry).Time;
                     if ((entry as MethodEntry).Time > endTime) endTime = (entry as MethodEntry).Time;
                 }
-                if (entry is LogEntry)
+                if (entry is LogEvent)
                 {
-                    if ((entry as LogEntry).Time < startTime) startTime = (entry as LogEntry).Time;
-                    if ((entry as LogEntry).Time > endTime) endTime = (entry as LogEntry).Time;
+                    if ((entry as LogEvent).Time < startTime) startTime = (entry as LogEvent).Time;
+                    if ((entry as LogEvent).Time > endTime) endTime = (entry as LogEvent).Time;
                 }
                 if (entry is ExceptionTrace)
                 {
@@ -86,7 +86,7 @@ namespace Yalf.Reporting
         public DateTime FirstLogTime { get; private set; }
         public DateTime LastLogTime { get; private set; }
 
-        public ILogFilters Filters { get; private set; }
+        public ILogFilters Filters { get; set; }
 
 
         public IList<BaseEntry> GetEntries()
@@ -172,7 +172,7 @@ namespace Yalf.Reporting
                     continue;
                 }
 
-                var logItem = item as LogEntry;
+                var logItem = item as LogEvent;
                 if (logItem != null)
                 {
                     filterSet.Add(FormatLevel(logItem.Level.ToString()));

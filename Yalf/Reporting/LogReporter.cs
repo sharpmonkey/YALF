@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Yalf.LogEntries;
 using Yalf.Reporting.OutputHandlers;
 
 namespace Yalf.Reporting
 {
-    class LogReporter
+    public class LogReporter
     {
         public static ILogOutputHandler Report(IFilterableLogEntryList logEntryList, ILogOutputHandler outputHandler)
         {
             var entries = logEntryList.GetEntries();
             LogReporter printer = new LogReporter(logEntryList, outputHandler);
-            
+
             printer.OutputHandler.Initialise();
             printer.GenerateOutput(entries, 0);
             printer.OutputHandler.Complete();
@@ -49,7 +47,7 @@ namespace Yalf.Reporting
                     var enabled = this.LogEntries.EnabledMethod(methodEntry.MethodName);
                     stack.Push(enabled);
 
-                   this.OutputHandler.HandleMethodEntry(methodEntry, indentLevel, enabled);
+                    this.OutputHandler.HandleMethodEntry(methodEntry, indentLevel, enabled);
 
                 }
                 else if (type == typeof(MethodExit))
@@ -63,9 +61,9 @@ namespace Yalf.Reporting
                     if (indentLevel > 0) indentLevel--;
 
                 }
-                else if (type == typeof(LogEntry))
+                else if (type == typeof(LogEvent))
                 {
-                    var logEntry = (LogEntry)entry;
+                    var logEntry = (LogEvent)entry;
                     this.OutputHandler.HandleLogEvent(logEntry, indentLevel, this.LogEntries.EnabledLevel(logEntry.Level.ToString()));
                 }
                 else if (type == typeof(ExceptionTrace))
