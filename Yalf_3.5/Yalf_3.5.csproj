@@ -36,7 +36,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>yalf.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Yalf\yalf.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="protobuf-net">
@@ -65,8 +65,8 @@
     <Compile Include="..\Yalf\LogEntries\ExceptionTrace.cs">
       <Link>LogEntries\ExceptionTrace.cs</Link>
     </Compile>
-    <Compile Include="..\Yalf\LogEntries\LogEntry.cs">
-      <Link>LogEntries\LogEntry.cs</Link>
+    <Compile Include="..\Yalf\LogEntries\LogEvent.cs">
+      <Link>LogEntries\LogEvent.cs</Link>
     </Compile>
     <Compile Include="..\Yalf\LogEntries\MethodEntry.cs">
       <Link>LogEntries\MethodEntry.cs</Link>
@@ -83,10 +83,49 @@
     <Compile Include="..\Yalf\NoLogAttribute.cs">
       <Link>NoLogAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\Yalf\Reporting\FilterableLogEntryList.cs">
+      <Link>Reporting\FilterableLogEntryList.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\DefaultFormatter.cs">
+      <Link>Reporting\Formatters\DefaultFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\DelimitedValuesFormatter.cs">
+      <Link>Reporting\Formatters\DelimitedValuesFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\ILogFormatter.cs">
+      <Link>Reporting\Formatters\ILogFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\SingleLineFormatter.cs">
+      <Link>Reporting\Formatters\SingleLineFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\IFilterableLogEntryList.cs">
+      <Link>Reporting\IFilterableLogEntryList.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\ILogFilters.cs">
+      <Link>Reporting\ILogFilters.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\LogFilters.cs">
+      <Link>Reporting\LogFilters.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\LogFiltersBuilder.cs">
+      <Link>Reporting\LogFiltersBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\LogReporter.cs">
+      <Link>Reporting\LogReporter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\MethodLogInformation.cs">
+      <Link>Reporting\MethodLogInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\OutputHandlers\DefaultOutputHandler.cs">
+      <Link>Reporting\OutputHandlers\DefaultOutputHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\OutputHandlers\ILogOutputHandler.cs">
+      <Link>Reporting\OutputHandlers\ILogOutputHandler.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Yalf\yalf.pfx">
-      <Link>yalf.pfx</Link>
+    <None Include="..\Yalf\yalf.snk">
+      <Link>yalf.snk</Link>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -95,7 +134,7 @@
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -9,8 +9,9 @@ namespace Yalf.Reporting.Formatters
         private readonly DefaultFormatter _default;
         private MethodEntry _lastMethodEntry = null;
 
-        public DelimitedValuesFormatter() : this(DefaultFormatter.DefaultIndentChar, DefaultFormatter.DefaultDateTimeFormat, "Yalf", DefaultDelimiter)
-        {}
+        public DelimitedValuesFormatter()
+            : this(DefaultFormatter.DefaultIndentChar, DefaultFormatter.DefaultDateTimeFormat, "Yalf", DefaultDelimiter)
+        { }
 
 
         public DelimitedValuesFormatter(String logContext, String delimiter)
@@ -78,8 +79,9 @@ namespace Yalf.Reporting.Formatters
 
         private string BuildOutputLine(string LogType, string title, string details, DateTime timeStamp, double duration, int level, int threadId)
         {
-            return String.Join(this.Delimiter, this.LogContext, LogType, title, details, timeStamp.ToString(this.DateTimeFormat), duration.ToString("0.####")
-                                , level.ToString(), threadId.ToString());
+            return String.Join(this.Delimiter, 
+                new[] { this.LogContext, LogType, title, details, timeStamp.ToString(this.DateTimeFormat), duration.ToString("0.####"), level.ToString(), threadId.ToString() }
+            );
         }
     }
 }
