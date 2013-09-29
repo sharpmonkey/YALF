@@ -1,37 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Windows.Forms;
 
 namespace YalfPerver
 {
     public partial class ConsoleOutput : UserControl
     {
-        private readonly Subject<string> _pipe;
-        private readonly IDisposable _outputDisposable;
         public ConsoleOutput()
         {
             InitializeComponent();
-
-            _pipe = new Subject<string>();
-
-            _outputDisposable = _pipe
-                .Buffer(TimeSpan.FromMilliseconds(150))
-                .Where(b => b.Count > 0)
-                .ObserveOn(this)
-                .Subscribe(WriteToOutput);
         }
 
         public void Write(string text)
         {
-            _pipe.OnNext(text);
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action(() => Write(text)));
+                return;
+            }
+
+            WriteToOutput(text);
         }
 
-        private void WriteToOutput(IList<string> lines)
+        private void WriteToOutput(string text)
         {
-            var output = string.Concat(lines);
-            tbConsole.AppendText(output);
+            tbConsole.AppendText(text);
             ScrollToCaret();
 
             _currentFindCharacter = 0;
@@ -60,17 +53,7 @@ namespace YalfPerver
 
         private void ConsoleOutput_Load(object sender, EventArgs e)
         {
-            if (ParentForm != null)
-                ParentForm.Closed += ParentFormOnClosed;
         }
-
-        private void ParentFormOnClosed(object sender, EventArgs eventArgs)
-        {
-            _pipe.OnCompleted();
-            _outputDisposable.Dispose();
-            _pipe.Dispose();
-        }
-
 
         private int _currentFindCharacter = 0;
         private String _currentFindText = "";

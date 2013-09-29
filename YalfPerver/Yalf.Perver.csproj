@@ -38,21 +38,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reactive.Core">
-      <HintPath>..\packages.temp\Rx-Core.2.1.30214.0\lib\Net40\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\packages.temp\Rx-Interfaces.2.1.30214.0\lib\Net40\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq">
-      <HintPath>..\packages.temp\Rx-Linq.2.1.30214.0\lib\Net40\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\packages.temp\Rx-PlatformServices.2.1.30214.0\lib\Net40\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Windows.Forms">
-      <HintPath>..\packages.temp\Rx-WinForms.2.1.30214.0\lib\Net40\System.Reactive.Windows.Forms.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
