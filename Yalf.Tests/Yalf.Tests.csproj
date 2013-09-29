@@ -50,6 +50,10 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="protobuf-net, Version=2.0.0.666, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\protobuf-net.2.0.0.666\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,6 +63,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogEntries\BaseEntryTest.cs" />
+    <Compile Include="LogEntries\ProtobufTest.cs" />
     <Compile Include="Reporting\DelimitedValuesFormatterTests.cs" />
     <Compile Include="Reporting\DefaultFormatterTests.cs" />
     <Compile Include="Reporting\DefaultOutputHandlerTests.cs" />
