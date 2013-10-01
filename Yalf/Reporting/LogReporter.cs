@@ -42,12 +42,12 @@ namespace Yalf.Reporting
                 }
                 else if (type == typeof(MethodEntry))
                 {
-                    indentLevel++;
                     var methodEntry = (MethodEntry)entry;
                     var enabled = this.LogEntries.EnabledMethod(methodEntry.MethodName);
                     stack.Push(enabled);
 
                     this.OutputHandler.HandleMethodEntry(methodEntry, indentLevel, enabled);
+                    ++indentLevel;
 
                 }
                 else if (type == typeof(MethodExit))
@@ -56,9 +56,8 @@ namespace Yalf.Reporting
                     if (stack.Any())
                         enabled = stack.Pop();
 
-                    this.OutputHandler.HandleMethodExit((MethodExit)entry, indentLevel, enabled);
-
                     if (indentLevel > 0) indentLevel--;
+                    this.OutputHandler.HandleMethodExit((MethodExit)entry, indentLevel, enabled);
 
                 }
                 else if (type == typeof(LogEvent))

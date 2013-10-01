@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="LogEntries\ThreadData.cs" />
     <Compile Include="Reporting\FilterableLogEntryList.cs" />
+    <Compile Include="Reporting\Formatters\DelayedFormatterService.cs" />
     <Compile Include="Reporting\Formatters\DelimitedValuesFormatter.cs" />
     <Compile Include="Reporting\Formatters\DefaultFormatter.cs" />
     <Compile Include="Reporting\Formatters\ILogFormatter.cs" />

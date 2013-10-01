@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Yalf.LogEntries;
 
 namespace Yalf.Reporting.Formatters
@@ -26,6 +27,11 @@ namespace Yalf.Reporting.Formatters
             return "".PadLeft(lvl * 2, ' ');
         }
 
+        public bool ProducesSingleLineMethodOutput
+        {
+            get { return false; }
+        }
+
         public string FormatThread(ThreadData logEntry, ILogFilters filters)
         {
             var outputFormat = "[Thread {0} '{1}']";
@@ -49,6 +55,11 @@ namespace Yalf.Reporting.Formatters
                 return string.Format("[Exit] {0}{1}", logEntry.MethodName, returnValue);
 
             return string.Format("[Exit] {0}{1} duration {2:0.####}ms", logEntry.MethodName, returnValue, logEntry.ElapsedMs);
+        }
+
+        public IList<string> FormatMethodExitDelayed(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
+        {
+            throw new NotImplementedException(String.Format("{0} does not need to immplement this method, use the regular FormatMethodExit method.", this.GetType().Name));
         }
 
         public string FormatException(int threadId, int level, int lineNo, ExceptionTrace logEntry, ILogFilters filters)

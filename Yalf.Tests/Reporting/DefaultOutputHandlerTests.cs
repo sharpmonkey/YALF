@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Yalf.LogEntries;
 using Yalf.Reporting;
@@ -13,9 +15,9 @@ namespace Yalf.Tests.Reporting
         [Test, ExpectedException(typeof(ArgumentNullException))]
         public void ctor_NoFiltersSupplied_ExceptionIsThrown()
         {
-// ReSharper disable UnusedVariable
+            // ReSharper disable UnusedVariable
             var dummy = new DefaultOutputHandler(null);
-// ReSharper restore UnusedVariable
+            // ReSharper restore UnusedVariable
         }
 
         [Test]
@@ -47,7 +49,7 @@ namespace Yalf.Tests.Reporting
             output.Complete();
 
             // Assert
-            var outputText = output.GetResults();
+            var outputText = output.GetReport();
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
         }
@@ -67,7 +69,7 @@ namespace Yalf.Tests.Reporting
             output.Complete();
 
             // Assert
-            var outputText = output.GetResults();
+            var outputText = output.GetReport();
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
         }
@@ -91,7 +93,7 @@ namespace Yalf.Tests.Reporting
             output.Complete();
 
             // Assert
-            var outputText = output.GetResults();
+            var outputText = output.GetReport();
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(output.CurrentThreadId, Is.EqualTo(22), "Not the expected thread id for the current thread.");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
@@ -116,7 +118,7 @@ namespace Yalf.Tests.Reporting
             output.Complete();
 
             // Assert
-            var outputText = output.GetResults();
+            var outputText = output.GetReport();
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(output.CurrentThreadId, Is.EqualTo(22), "Not the expected thread id for the current thread.");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
@@ -141,7 +143,7 @@ namespace Yalf.Tests.Reporting
             output.Complete();
 
             // Assert
-            var outputText = output.GetResults();
+            var outputText = output.GetReport();
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(output.CurrentThreadId, Is.EqualTo(22), "Not the expected thread id for the current thread.");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
@@ -163,7 +165,7 @@ namespace Yalf.Tests.Reporting
             output.Complete();
 
             // Assert
-            var outputText = output.GetResults();
+            var outputText = output.GetReport();
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
         }
@@ -185,9 +187,84 @@ namespace Yalf.Tests.Reporting
             output.Complete();
 
             // Assert
-            var outputText = output.GetResults();
+            var outputText = output.GetReport();
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
+        }
+
+        [Test]
+        public void SingleLineFormatter_NestedMethodCalls_ReportHasCorrectIndenting()
+        {
+            // Arrange
+            var formatter = new SingleLineFormatter();
+            var startDateTime = DateTime.Now;
+            var entries = new BaseEntry[]
+                {
+                    new MethodEntry(1, "TopLevelMethod", null, startDateTime),
+                    new MethodExit(1, "TopLevelMethod", 233, true, "blackSheep"),
+                    new MethodEntry(1, "FirstMethod", null, startDateTime.AddSeconds(12)),
+                    new MethodEntry(2, "SecondMethod", null, startDateTime.AddSeconds(45)),
+                    new LogEvent(LogLevel.Info, startDateTime.AddSeconds(47), "Information log message here"), 
+                    new ExceptionTrace(new ArgumentNullException("lineNo", "Test the log"), startDateTime.AddSeconds(53)), 
+                    new MethodEntry(3, "ThirdMethod", null, startDateTime.AddSeconds(75)),
+                    new MethodExit(3, "ThirdMethod", 100, false, null),
+                    new MethodExit(2, "SecondMethod", 178, false, null),
+                    new MethodExit(1, "FirstMethod", 200, false, null),
+                    new MethodEntry(1, "TopLevelMethod2", null, startDateTime.AddSeconds(99)),
+                    new MethodExit(1, "TopLevelMethod2", 488, true, "whiteSheep"),
+                };
+
+            var expectedText = (new string[]
+                                    {
+                                        string.Format("TopLevelMethod(blackSheep) started {0:HH:mm:ss.fff} duration 233ms", startDateTime),
+                                        string.Format("FirstMethod() started {0:HH:mm:ss.fff} duration 200ms", startDateTime.AddSeconds(12)),
+                                        string.Format("  SecondMethod() started {0:HH:mm:ss.fff} duration 178ms", startDateTime.AddSeconds(45)),
+                                        String.Format("  [Log] [Info] Information log message here"),
+                                        string.Format("  [Exception] {0:HH:mm:ss.fff} Test the log\r\nParameter name: lineNo", startDateTime.AddSeconds(53)),
+                                        string.Format("    ThirdMethod() started {0:HH:mm:ss.fff} duration 100ms", startDateTime.AddSeconds(75)),
+                                        string.Format("TopLevelMethod2(whiteSheep) started {0:HH:mm:ss.fff} duration 488ms", startDateTime.AddSeconds(99))
+                                    }
+                               ).ToList();
+
+            var filters = this.GetDefaultFilters();
+            var indentLevel = 0;
+
+            // Act
+            var outputter = new DefaultOutputHandler(filters, formatter);
+            outputter.Initialise();
+
+            foreach (var entry in entries)
+            {
+                if (entry is MethodEntry)
+                {
+                    outputter.HandleMethodEntry((entry as MethodEntry), indentLevel, true);
+                    ++indentLevel;
+                }
+                else if (entry is MethodExit)
+                {
+                    --indentLevel;
+                    outputter.HandleMethodExit((entry as MethodExit), indentLevel, true);
+                }
+                else if (entry is LogEvent)
+                {
+                    outputter.HandleLogEvent((entry as LogEvent), indentLevel, true);
+                }
+                else if (entry is ExceptionTrace)
+                {
+                    outputter.HandleException((entry as ExceptionTrace), indentLevel);
+                }
+            }
+
+            outputter.Complete();
+            var reportText = outputter.GetReport();
+
+            // Assert
+            List<String> output = reportText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+            Assert.That(reportText, Is.Not.Empty, "Expected report text to be returned.");
+            for (int index = 0; index < 3; index++)
+            {
+                Assert.That(output[index], Is.EqualTo(expectedText[index]), "Not the expected text for line {0}", index + 1);
+            }
         }
 
         private Exception GenerateExceptionWithStackTrace()
@@ -195,7 +272,7 @@ namespace Yalf.Tests.Reporting
             try
             {
                 int start = 0;
-                int end = 32/start;
+                int end = 32 / start;
 
                 return null;
             }

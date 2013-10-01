@@ -83,7 +83,15 @@ namespace YalfPerver.Utilities
         {
             _outputHandler.Complete();
 
-            File.WriteAllText(this.FilePath, _outputHandler.GetResults());
+            File.WriteAllText(this.FilePath, _outputHandler.GetReport());
+        }
+
+        public string GetReport()
+        {
+            //var fs = new System.IO.FileStream("", FileMode.OpenOrCreate);
+            //var sw = new StreamWriter(fs)
+
+            throw new NotImplementedException("The FIleOutputHandler writes all report data to the designated file in the Complete() method, you need to read the contents from the file.");
         }
     }
 }

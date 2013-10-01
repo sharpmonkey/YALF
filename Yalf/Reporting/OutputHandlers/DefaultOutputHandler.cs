@@ -47,7 +47,25 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleMethodExit(MethodExit entry, int indentLevel, bool displayEnabled)
         {
+            if (this.Formatter.ProducesSingleLineMethodOutput)
+            {
+                this.ManageNestedCallsForSingleLineFormats(entry, indentLevel, displayEnabled);
+                return;
+            }
+            
             this.AddLine(this.Formatter.FormatMethodExit(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+        }
+
+        private void ManageNestedCallsForSingleLineFormats(MethodExit entry, int indentLevel, bool displayEnabled)
+        {
+            var output = this.Formatter.FormatMethodExitDelayed(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters);
+            if (output == null)
+                return;
+
+            for (int lineNo = 0; lineNo < output.Count; lineNo++)
+            {
+                this.AddLine(output[lineNo], indentLevel + lineNo);
+            }
         }
 
         public void HandleException(ExceptionTrace entry, int indentLevel)
@@ -60,7 +78,7 @@ namespace Yalf.Reporting.OutputHandlers
             this.AddLine(this.Formatter.FormatLogEvent(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
         }
 
-        public String GetResults()
+        public String GetReport()
         {
             return _buffer.ToString();
         }

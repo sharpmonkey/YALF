@@ -105,7 +105,7 @@ namespace YalfPerver
             try
             {
                 var output = LogReporter.Report(_filteredEntries, new DefaultOutputHandler(_filteredEntries.Filters, formatter));
-                consoleOutput.Write((output as DefaultOutputHandler).GetResults());
+                consoleOutput.Write((output as DefaultOutputHandler).GetReport());
             }
             catch (Exception ex)
             {

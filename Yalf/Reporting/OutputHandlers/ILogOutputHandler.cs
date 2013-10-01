@@ -1,4 +1,5 @@
-﻿using Yalf.LogEntries;
+﻿using System;
+using Yalf.LogEntries;
 
 namespace Yalf.Reporting.OutputHandlers
 {
@@ -16,6 +17,7 @@ namespace Yalf.Reporting.OutputHandlers
        void HandleLogEvent(LogEvent entry, int indentLevel, bool displayEnabled);
 
        void Complete();
-       
+
+       String GetReport();
    }
 }
