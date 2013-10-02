@@ -208,6 +208,8 @@ namespace Yalf.Tests.Reporting
                     new ExceptionTrace(new ArgumentNullException("lineNo", "Test the log"), startDateTime.AddSeconds(53)), 
                     new MethodEntry(3, "ThirdMethod", null, startDateTime.AddSeconds(75)),
                     new MethodExit(3, "ThirdMethod", 100, false, null),
+                    new MethodEntry(3, "FourthMethod", null, startDateTime.AddSeconds(80)),
+                    new MethodExit(3, "FourthMethod", 57, false, null),
                     new MethodExit(2, "SecondMethod", 178, false, null),
                     new MethodExit(1, "FirstMethod", 200, false, null),
                     new MethodEntry(1, "TopLevelMethod2", null, startDateTime.AddSeconds(99)),
@@ -219,10 +221,11 @@ namespace Yalf.Tests.Reporting
                                         string.Format("TopLevelMethod(blackSheep) started {0:HH:mm:ss.fff} duration 233ms", startDateTime),
                                         string.Format("FirstMethod() started {0:HH:mm:ss.fff} duration 200ms", startDateTime.AddSeconds(12)),
                                         string.Format("  SecondMethod() started {0:HH:mm:ss.fff} duration 178ms", startDateTime.AddSeconds(45)),
-                                        String.Format("    [Log] [Info] Information log message here"),
+                                        string.Format("    [Log] [Info] Information log message here"),
                                         string.Format("    [Exception] {0:HH:mm:ss.fff} Test the log", startDateTime.AddSeconds(53)),
                                         string.Format("Parameter name: lineNo"),
                                         string.Format("    ThirdMethod() started {0:HH:mm:ss.fff} duration 100ms", startDateTime.AddSeconds(75)),
+                                        string.Format("    FourthMethod() started {0:HH:mm:ss.fff} duration 57ms", startDateTime.AddSeconds(80)),
                                         string.Format("TopLevelMethod2(whiteSheep) started {0:HH:mm:ss.fff} duration 488ms", startDateTime.AddSeconds(99))
                                     }
                                ).ToList();
@@ -265,7 +268,7 @@ namespace Yalf.Tests.Reporting
             Assert.That(reportText, Is.Not.Empty, "Expected report text to be returned.");
             for (int index = 0; index < expectedText.Count; index++)
             {
-                //Console.WriteLine("Checking\r\n\"{0}\" with \r\n\"{1}\"", output[index], expectedText[index]);
+                Console.WriteLine("Checking actual\r\n\"{0}\" with expected\r\n\"{1}\"", output[index], expectedText[index]);
                 Assert.That(output[index], Is.EqualTo(expectedText[index]), "Not the expected text for line {0}", index + 1);
             }
         }

@@ -38,6 +38,9 @@ namespace Yalf.Reporting.Formatters
 
         public string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters)
         {
+            if (filters.HideEnterMethodLogs)
+                return null;
+
             var args = ((logEntry.Arguments == null) || filters.HideMethodParameters) ? "" : string.Join(", ", logEntry.Arguments);
             var timeText = filters.HideTimeStampInMethod ? "" : string.Concat(this.FormatTime(logEntry.Time), " ");
             return string.Format("[Enter] {0}{1}({2})", timeText, logEntry.MethodName, args);
@@ -45,6 +48,9 @@ namespace Yalf.Reporting.Formatters
 
         public string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
         {
+            if (filters.HideExitMethodLogs)
+                return null;
+
             var returnValue = (logEntry.ReturnRecorded && !filters.HideMethodReturnValue) ? "(" + logEntry.ReturnValue + ")" : "()";
             if (filters.HideMethodDuration)
                 return string.Format("[Exit] {0}{1}", logEntry.MethodName, returnValue);
