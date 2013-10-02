@@ -47,7 +47,7 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleMethodExit(MethodExit entry, int indentLevel, bool displayEnabled)
         {
-            if (this.Formatter.ProducesSingleLineMethodOutput)
+            if (this.Formatter is IIndentableSingleLineMethodFormatter)
             {
                 this.ManageNestedCallsForSingleLineFormats(entry, indentLevel, displayEnabled);
                 return;
@@ -62,9 +62,14 @@ namespace Yalf.Reporting.OutputHandlers
             if (output == null)
                 return;
 
+            var singleLineFormat = (this.Formatter as IIndentableSingleLineMethodFormatter);
+            
+            var indentOffset = 0;
             for (int lineNo = 0; lineNo < output.Count; lineNo++)
             {
-                this.AddLine(output[lineNo], indentLevel + lineNo);
+                this.AddLine(output[lineNo], indentLevel + indentOffset);
+                if ((singleLineFormat != null) && (singleLineFormat.IndentIncreaseRequired(output[lineNo])))
+                    ++indentOffset;
             }
         }
 

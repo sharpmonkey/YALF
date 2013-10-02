@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Yalf.LogEntries;
@@ -167,13 +166,13 @@ namespace Yalf.Tests.Reporting
 
             var expectedText = (new string[]
                                     {
-                                        string.Format("TopLevelMethod(blackSheep) started {0:HH:mm:ss.fff} duration 233ms", startDateTime),
-                                        string.Format("FirstMethod() started {0:HH:mm:ss.fff} duration 200ms", startDateTime.AddSeconds(12)),
-                                        string.Format("SecondMethod() started {0:HH:mm:ss.fff} duration 178ms", startDateTime.AddSeconds(45)),
-                                        string.Format("[Log] [Info] Information log message here"),
-                                        string.Format("[Exception] {0:HH:mm:ss.fff} Test the log\r\nParameter name: lineNo", startDateTime.AddSeconds(53)),
-                                        string.Format("ThirdMethod() started {0:HH:mm:ss.fff} duration 100ms", startDateTime.AddSeconds(75)),
-                                        string.Format("TopLevelMethod2(whiteSheep) started {0:HH:mm:ss.fff} duration 488ms", startDateTime.AddSeconds(99))
+                                        string.Format("Yalf,Method,TopLevelMethod,blackSheep,{0:HH:mm:ss.fff},233,1,22", startDateTime),
+                                        string.Format("Yalf,Method,FirstMethod,,{0:HH:mm:ss.fff},200,1,22", startDateTime.AddSeconds(12)),
+                                        string.Format("Yalf,Method,SecondMethod,,{0:HH:mm:ss.fff},178,2,22", startDateTime.AddSeconds(45)),
+                                        string.Format("Yalf,Log,Information log message here,,{0:HH:mm:ss.fff},0,2,22", startDateTime.AddSeconds(47)),
+                                        string.Format("Yalf,Exception,Test the log Parameter name: lineNo,,{0:HH:mm:ss.fff},0,2,22", startDateTime.AddSeconds(53)),
+                                        string.Format("Yalf,Method,ThirdMethod,,{0:HH:mm:ss.fff},100,3,22", startDateTime.AddSeconds(75)),
+                                        string.Format("Yalf,Method,TopLevelMethod2,whiteSheep,{0:HH:mm:ss.fff},488,1,22", startDateTime.AddSeconds(99))
                                     }
                                ).ToList();
 
@@ -225,12 +224,17 @@ namespace Yalf.Tests.Reporting
             Console.WriteLine(String.Join(Environment.NewLine, actualText.ToArray()));
 
             Assert.That(actualText.Count, Is.EqualTo(expectedText.Count), "Expected {0} lines to be returned overall, but have {1}.", expectedText.Count, actualText.Count);
-            var misMatchedResults = actualText.Where((at, i) => (at != expectedText[i]));
-            Assert.That(misMatchedResults.Count(), Is.EqualTo(0), "{0} of the lines do not match.\nExpected:\n{1}\n\nActual:\n{2}"
-                                                                , misMatchedResults.Count()
-                                                                , String.Join(Environment.NewLine, expectedText.ToArray())
-                                                                , String.Join(Environment.NewLine, actualText.ToArray())
-                        );
+            for (int logLine = 0; logLine < actualText.Count-1; logLine++)
+            {
+                Assert.That(actualText[logLine], Is.EqualTo(expectedText[logLine]), "Text does not match on line {0}", logLine);
+            }
+            
+            //var misMatchedResults = actualText.Where((at, i) => (at != expectedText[i]));
+            //Assert.That(misMatchedResults.Count(), Is.EqualTo(0), "{0} of the lines do not match.\nExpected:\n{1}\n\nActual:\n{2}"
+            //                                                    , misMatchedResults.Count()
+            //                                                    , String.Join(Environment.NewLine, expectedText.ToArray())
+            //                                                    , String.Join(Environment.NewLine, actualText.ToArray())
+            //            );
         }
 
         private Exception GenerateExceptionWithStackTrace()

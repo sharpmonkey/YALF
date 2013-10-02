@@ -6,26 +6,20 @@ using Yalf.Reporting.OutputHandlers;
 
 namespace Yalf.Reporting.Formatters
 {
-    public class SingleLineFormatter : ILogFormatter
+    public class SingleLineFormatter : ILogFormatter, IIndentableSingleLineMethodFormatter
     {
         private readonly DefaultFormatter _default;
-        private Stack<MethodEntry> _lastMethodEntry;
-        private Stack<String> _orderedBuffer;
-        private Dictionary<String, List<String>> _nonMethodLogs;
         private DelayedFormatterService _delayedService;
 
-        public SingleLineFormatter() : this(DefaultFormatter.DefaultIndentChar, DefaultFormatter.DefaultDateTimeFormat)
+        public SingleLineFormatter()
+            : this(DefaultFormatter.DefaultIndentChar, DefaultFormatter.DefaultDateTimeFormat)
         {
-            _delayedService = new DelayedFormatterService();
-            _nonMethodLogs = new Dictionary<string, List<string>>();
-            _orderedBuffer = new Stack<string>(100);
-            _delayedService = new DelayedFormatterService();
-            _lastMethodEntry = new Stack<MethodEntry>(10);
         }
 
         public SingleLineFormatter(Char indentChar, String dateTimeFormatText)
         {
             _default = new DefaultFormatter(indentChar, dateTimeFormatText);
+            _delayedService = new DelayedFormatterService(dateTimeFormatText);
         }
 
         public string DateTimeFormat
@@ -43,11 +37,6 @@ namespace Yalf.Reporting.Formatters
             return _default.Indent(level);
         }
 
-        public bool ProducesSingleLineMethodOutput
-        {
-            get { return true; }
-        }
-
         public string FormatThread(ThreadData logEntry, ILogFilters filters)
         {
             return _default.FormatThread(logEntry, filters);
@@ -56,8 +45,7 @@ namespace Yalf.Reporting.Formatters
         public string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters)
         {
             // entry details are merged with exit details
-            _lastMethodEntry.Push(logEntry);
-            return null;
+            return _delayedService.HandleMethodEntry(logEntry);
         }
 
         /// <summary>
@@ -69,38 +57,15 @@ namespace Yalf.Reporting.Formatters
         /// </remarks>
         public IList<String> FormatMethodExitDelayed(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
         {
-            if ((_lastMethodEntry == null) || (_lastMethodEntry.Count <= 0))
-                throw new InvalidOperationException(String.Format("No related Method Entry log has been set for '{0}' at line {1:0000} - there could be a problem with the yalf logs."
-                                                                , logEntry.MethodName, lineNo));
-            if (_lastMethodEntry.Peek().MethodName != logEntry.MethodName)
-                throw new InvalidOperationException(String.Format("The method exit log '{1}' has a different name than the current method entry log '{0}' at line {2:0000} - there could be a problem with the yalf logs."
-                                                                , _lastMethodEntry.Peek().MethodName, logEntry.MethodName, lineNo));
-
-            var currentMethodEntry = _lastMethodEntry.Pop();
             var returnValue = (logEntry.ReturnRecorded && !filters.HideMethodReturnValue) ? "(" + logEntry.ReturnValue + ")" : "()";
             var duration = (filters.HideMethodDuration) ? "" : string.Format(" duration {0:0.####}ms", logEntry.ElapsedMs);
-            var timestamp = (filters.HideTimeStampInMethod) ? "" : string.Concat(" started ", (currentMethodEntry.Time.ToString(DateTimeFormat)));
+            Func<DateTime, String> lineBuilder = startTime =>
+                        {
+                            var timestamp = (filters.HideTimeStampInMethod) ? "" : string.Concat(" started ", (startTime.ToString(DateTimeFormat)));
+                            return String.Concat(logEntry.MethodName, returnValue, timestamp, duration);
+                        };
 
-            // keep any nested items until we have returned to the top level as we process the exit methods from the lower most level to the top
-            if (_nonMethodLogs.ContainsKey(logEntry.MethodName))
-            {
-                // push any LogEvents or ExceptionLogs into the correct place in the stack so the output is in the correct order
-                var logs = _nonMethodLogs[logEntry.MethodName];
-                while (logs.Count > 0)
-                {
-                    _orderedBuffer.Push(logs[logs.Count - 1]);
-                    _nonMethodLogs[logEntry.MethodName].RemoveAt(logs.Count - 1);
-                }
-            }
-            _orderedBuffer.Push(String.Concat(logEntry.MethodName, returnValue, timestamp, duration));
-
-            if (_lastMethodEntry.Count > 0)
-                return null;
-
-            var result = _orderedBuffer.ToArray().ToList();
-            _orderedBuffer.Clear();
-            return result;
-
+            return _delayedService.HandleMethodExit(logEntry, lineNo, filters, lineBuilder);
         }
 
         public string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
@@ -111,27 +76,30 @@ namespace Yalf.Reporting.Formatters
 
         public string FormatException(int threadId, int level, int lineNo, ExceptionTrace logEntry, ILogFilters filters)
         {
-            var result = _default.FormatException(threadId, level, lineNo, logEntry, filters);
-            return this.HandleDelayedNonMethodLogs(result);
+            return _delayedService.HandleException(_default.FormatException(threadId, level, lineNo, logEntry, filters));
         }
 
         public string FormatLogEvent(int threadId, int level, int lineNo, LogEvent logEntry, ILogFilters filters)
         {
-            var result = _default.FormatLogEvent(threadId, level, lineNo, logEntry, filters);
-            return this.HandleDelayedNonMethodLogs(result);
+            return _delayedService.HandleLogEvent(_default.FormatLogEvent(threadId, level, lineNo, logEntry, filters));
         }
 
-        private string HandleDelayedNonMethodLogs(string result)
+        public bool IsLogEventLine(string formattedLine)
         {
-            if (_lastMethodEntry.Count <= 0)
-                return result;
+            return (formattedLine.IndexOf("[Log]", StringComparison.Ordinal) == 0);
+        }
 
-            var key = _lastMethodEntry.Peek().MethodName;
-            if (!_nonMethodLogs.ContainsKey(key))
-                _nonMethodLogs.Add(key, new List<string>());
+        public bool IsExceptionTraceLine(string formattedLine)
+        {
+            return (formattedLine.IndexOf("[Exception]", StringComparison.Ordinal) == 0);
+        }
 
-            _nonMethodLogs[key].Add(result);
-            return null;
+        public bool IndentIncreaseRequired(string formattedLine)
+        {
+            if (this.IsLogEventLine(formattedLine)) return false;
+            if (this.IsExceptionTraceLine(formattedLine)) return false;
+
+            return true;
         }
     }
 }

@@ -27,11 +27,6 @@ namespace Yalf.Reporting.Formatters
             return "".PadLeft(lvl * 2, ' ');
         }
 
-        public bool ProducesSingleLineMethodOutput
-        {
-            get { return false; }
-        }
-
         public string FormatThread(ThreadData logEntry, ILogFilters filters)
         {
             var outputFormat = "[Thread {0} '{1}']";

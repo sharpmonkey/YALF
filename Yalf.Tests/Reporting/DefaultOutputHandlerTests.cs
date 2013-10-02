@@ -219,8 +219,9 @@ namespace Yalf.Tests.Reporting
                                         string.Format("TopLevelMethod(blackSheep) started {0:HH:mm:ss.fff} duration 233ms", startDateTime),
                                         string.Format("FirstMethod() started {0:HH:mm:ss.fff} duration 200ms", startDateTime.AddSeconds(12)),
                                         string.Format("  SecondMethod() started {0:HH:mm:ss.fff} duration 178ms", startDateTime.AddSeconds(45)),
-                                        String.Format("  [Log] [Info] Information log message here"),
-                                        string.Format("  [Exception] {0:HH:mm:ss.fff} Test the log\r\nParameter name: lineNo", startDateTime.AddSeconds(53)),
+                                        String.Format("    [Log] [Info] Information log message here"),
+                                        string.Format("    [Exception] {0:HH:mm:ss.fff} Test the log", startDateTime.AddSeconds(53)),
+                                        string.Format("Parameter name: lineNo"),
                                         string.Format("    ThirdMethod() started {0:HH:mm:ss.fff} duration 100ms", startDateTime.AddSeconds(75)),
                                         string.Format("TopLevelMethod2(whiteSheep) started {0:HH:mm:ss.fff} duration 488ms", startDateTime.AddSeconds(99))
                                     }
@@ -259,10 +260,12 @@ namespace Yalf.Tests.Reporting
             var reportText = outputter.GetReport();
 
             // Assert
-            List<String> output = reportText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+            List<String> output = reportText.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            Assert.That(output.Count, Is.EqualTo(expectedText.Count), "Expected {0} output lines, but have {1}", expectedText.Count, output.Count);
             Assert.That(reportText, Is.Not.Empty, "Expected report text to be returned.");
-            for (int index = 0; index < 3; index++)
+            for (int index = 0; index < expectedText.Count; index++)
             {
+                //Console.WriteLine("Checking\r\n\"{0}\" with \r\n\"{1}\"", output[index], expectedText[index]);
                 Assert.That(output[index], Is.EqualTo(expectedText[index]), "Not the expected text for line {0}", index + 1);
             }
         }
