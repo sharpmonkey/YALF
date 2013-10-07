@@ -55,7 +55,7 @@ namespace Yalf.Reporting.Formatters
         /// <para>This is required as, due to the nature of the single line formatter, nested logs are returned in the wrong order with the normal <see cref="FormatMethodExit"/> method.</para>
         /// <para>The indent must still be applied to the strings in the returned list in the <see cref="ILogOutputHandler"/>.  The first item will be the top level method call.</para>
         /// </remarks>
-        public IList<String> FormatMethodExitDelayed(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
+        public IList<OrderedOutput> FormatMethodExitDelayed(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
         {
             var returnValue = (logEntry.ReturnRecorded && !filters.HideMethodReturnValue) ? "(" + logEntry.ReturnValue + ")" : "()";
             var duration = (filters.HideMethodDuration) ? "" : string.Format(" duration {0:0.####}ms", logEntry.ElapsedMs);

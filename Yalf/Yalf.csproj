@@ -76,6 +76,7 @@
     <Compile Include="Reporting\Formatters\DefaultFormatter.cs" />
     <Compile Include="Reporting\Formatters\ILogFormatter.cs" />
     <Compile Include="Reporting\Formatters\IIndentableSingleLineMethodFormatter.cs" />
+    <Compile Include="Reporting\Formatters\OrderedOutput.cs" />
     <Compile Include="Reporting\Formatters\SingleLineFormatter.cs" />
     <Compile Include="Reporting\ILogFilters.cs" />
     <Compile Include="Reporting\LogFiltersBuilder.cs" />

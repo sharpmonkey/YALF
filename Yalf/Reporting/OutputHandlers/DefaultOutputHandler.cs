@@ -62,14 +62,9 @@ namespace Yalf.Reporting.OutputHandlers
             if (output == null)
                 return;
 
-            var singleLineFormat = (this.Formatter as IIndentableSingleLineMethodFormatter);
-            
-            var indentOffset = 0;
-            for (int lineNo = 0; lineNo < output.Count; lineNo++)
+            foreach(OrderedOutput outputLine in output)
             {
-                this.AddLine(output[lineNo], indentLevel + indentOffset);
-                if ((singleLineFormat != null) && (singleLineFormat.IndentIncreaseRequired(output[lineNo])))
-                    ++indentOffset;
+                this.AddLine(outputLine.FormattedLine, indentLevel + outputLine.Level);
             }
         }
 

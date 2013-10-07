@@ -39,11 +39,12 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
 
             // Assert
-            Assert.That(outputText.Count, Is.EqualTo(1), "Expected one string to be returned");
-            Assert.That(outputText[0], Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
+            Assert.That(orderedOutput[0].Level, Is.EqualTo(0), "Not the expected nested level, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput[0].FormattedLine, Is.EqualTo(expectedText), "Not the expected formatted line, you may need to adjust the test if the formatter has been changed.");
         }
 
         [Test]
@@ -59,11 +60,12 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
 
             // Assert
-            Assert.That(outputText.Count, Is.EqualTo(1), "Expected one string to be returned");
-            Assert.That(outputText[0], Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
+            Assert.That(orderedOutput[0].Level, Is.EqualTo(0), "Not the expected nested level, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput[0].FormattedLine, Is.EqualTo(expectedText), "Not the expected formatted line, you may need to adjust the test if the formatter has been changed.");
         }
 
         [Test]
@@ -79,11 +81,12 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
 
             // Assert
-            Assert.That(outputText.Count, Is.EqualTo(1), "Expected one string to be returned");
-            Assert.That(outputText[0], Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
+            Assert.That(orderedOutput[0].Level, Is.EqualTo(0), "Not the expected nested level, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput[0].FormattedLine, Is.EqualTo(expectedText), "Not the expected formatted line, you may need to adjust the test if the formatter has been changed.");
         }
 
         [Test]
@@ -99,11 +102,12 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
 
             // Assert
-            Assert.That(outputText.Count, Is.EqualTo(1), "Expected one string to be returned");
-            Assert.That(outputText[0], Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
+            Assert.That(orderedOutput[0].Level, Is.EqualTo(0), "Not the expected nested level, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput[0].FormattedLine, Is.EqualTo(expectedText), "Not the expected formatted line, you may need to adjust the test if the formatter has been changed.");
         }
 
         [Test]
@@ -119,11 +123,12 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
 
             // Assert
-            Assert.That(outputText.Count, Is.EqualTo(1), "Expected one string to be returned");
-            Assert.That(outputText[0], Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
+            Assert.That(orderedOutput[0].Level, Is.EqualTo(0), "Not the expected nested level, you may need to adjust the test if the formatter has been changed.");
+            Assert.That(orderedOutput[0].FormattedLine, Is.EqualTo(expectedText), "Not the expected formatted line, you may need to adjust the test if the formatter has been changed.");
         }
 
 
@@ -177,7 +182,7 @@ namespace Yalf.Tests.Reporting
                 {
                     var result = formatter.FormatMethodExitDelayed(threadId, indentLevel--, lineNo++, (entry as MethodExit), filters);
                     if (result != null)
-                        actualText.AddRange(result);
+                        actualText.AddRange(result.Select(oo => oo.FormattedLine).ToList());
                 }
                 else if (entry is LogEvent)
                 {
@@ -281,7 +286,7 @@ namespace Yalf.Tests.Reporting
                 {
                     var result = formatter.FormatMethodExitDelayed(22, (entry as MethodExit).StackLevel, lineNo, (MethodExit)entry, filters);
                     if (result != null)
-                        output.AddRange(result);
+                        output.AddRange(result.Select(oo => oo.FormattedLine).ToArray());
 
                     lineNo--;
                 }

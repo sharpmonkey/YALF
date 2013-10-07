@@ -8,8 +8,8 @@ namespace Yalf.Reporting.Formatters
     public class DelayedFormatterService
     {
         private Stack<MethodEntry> _lastMethodEntry = new Stack<MethodEntry>(10);
-        private Stack<String> _orderedBuffer = new Stack<string>(100);
-        private Dictionary<String, List<String>> _nonMethodLogs = new Dictionary<string, List<string>>();
+        private List<LogEntryTracker> _orderedBuffer = new List<LogEntryTracker>(100);
+        private int _currentNestedLevel = 0;
 
         public readonly string DateTimeFormat;
 
@@ -21,11 +21,14 @@ namespace Yalf.Reporting.Formatters
         public string HandleMethodEntry(MethodEntry logEntry)
         {
             // entry details are merged with exit details
+
             _lastMethodEntry.Push(logEntry);
+            _orderedBuffer.Add(new LogEntryTracker(_currentNestedLevel, logEntry, null));
+            _currentNestedLevel++;
             return null;
         }
 
-        public IList<string> HandleMethodExit(MethodExit logEntry, int lineNo, ILogFilters filters, Func<DateTime, string> lineBuilder)
+        public IList<OrderedOutput> HandleMethodExit(MethodExit logEntry, int lineNo, ILogFilters filters, Func<DateTime, string> lineBuilder)
         {
             if ((_lastMethodEntry == null) || (_lastMethodEntry.Count <= 0))
                 throw new InvalidOperationException(String.Format("No related Method Entry log has been set for '{0}' at line {1:0000} - there could be a problem with the yalf logs."
@@ -34,51 +37,76 @@ namespace Yalf.Reporting.Formatters
                 throw new InvalidOperationException(String.Format("The method exit log '{1}' has a different name than the current method entry log '{0}' at line {2:0000} - there could be a problem with the yalf logs."
                                                                 , _lastMethodEntry.Peek().MethodName, logEntry.MethodName, lineNo));
 
-            // keep any nested items until we have returned to the top level as we process the exit methods from the lower most level to the top
-            if (_nonMethodLogs.ContainsKey(logEntry.MethodName))
-            {
-                // push any LogEvents or ExceptionLogs into the correct place in the stack so the output is in the correct order
-                var logs = _nonMethodLogs[logEntry.MethodName];
-                while (logs.Count > 0)
-                {
-                    _orderedBuffer.Push(logs[logs.Count - 1]);
-                    _nonMethodLogs[logEntry.MethodName].RemoveAt(logs.Count - 1);
-                }
-            }
-
             var currentMethodEntry = _lastMethodEntry.Pop();
-            _orderedBuffer.Push(lineBuilder(currentMethodEntry.Time));
+            _currentNestedLevel--;
+
+            int indexOfEntryToUpdate = FindLastIndexOf(currentMethodEntry);
+            if (indexOfEntryToUpdate < 0)
+                throw new InvalidOperationException(String.Format("Could not find the method [{0}] in the current ordered buffer.  This probably means there is an error in the processing logic, or the yalf file is corrupt.",
+                                                                        currentMethodEntry.MethodName));
+            
+            var currentItem = _orderedBuffer[indexOfEntryToUpdate];
+            _orderedBuffer[indexOfEntryToUpdate] = new LogEntryTracker(currentItem.Level, currentItem.RelatedEntry, lineBuilder(currentMethodEntry.Time));
 
             if (_lastMethodEntry.Count > 0)
                 return null;
 
-            var result = _orderedBuffer.ToArray().ToList();
+            _currentNestedLevel = 0;
+            return this.PrepareOutputBuffer();
+        }
+
+        private int FindLastIndexOf(MethodEntry logEntry)
+        {
+            for (int index = _orderedBuffer.Count-1; index >= 0; index--)
+            {
+                if ((_orderedBuffer[index].RelatedEntry != null) && (_orderedBuffer[index].RelatedEntry.MethodName == logEntry.MethodName))
+                    return index;
+            }
+
+            return -1;
+        }
+
+        private IList<OrderedOutput> PrepareOutputBuffer()
+        {
+            var result = new List<OrderedOutput>(_orderedBuffer.Count);
+            result.AddRange(_orderedBuffer.Select(item => new OrderedOutput(item.Level, item.FormattedLine)));
+
             _orderedBuffer.Clear();
             return result;
+
         }
 
         public string HandleException(string formattedLine)
         {
-            return this.HandleDelayedNonMethodLogs(formattedLine);
+            return this.HandleNonMethodLogs(formattedLine);
         }
 
         public string HandleLogEvent(string formattedLine)
         {
-            return this.HandleDelayedNonMethodLogs(formattedLine);
+            return this.HandleNonMethodLogs(formattedLine);
         }
 
-        private string HandleDelayedNonMethodLogs(string result)
+        private string HandleNonMethodLogs(string formattedLine)
         {
-            if (_lastMethodEntry.Count <= 0)
-                return result;
+            if (_orderedBuffer.Count <= 0)
+                return formattedLine;
 
-            var key = _lastMethodEntry.Peek().MethodName;
-            if (!_nonMethodLogs.ContainsKey(key))
-                _nonMethodLogs.Add(key, new List<string>());
-
-            _nonMethodLogs[key].Add(result);
+            _orderedBuffer.Add(new LogEntryTracker(_currentNestedLevel, null, formattedLine));
             return null;
         }
 
+        private class LogEntryTracker
+        {
+            public readonly int Level;
+            public readonly MethodEntry RelatedEntry;
+            public readonly String FormattedLine;
+
+            public LogEntryTracker(int level, MethodEntry relatedEntry, String formattedLine)
+            {
+                this.Level = level;
+                this.RelatedEntry = relatedEntry;
+                this.FormattedLine = formattedLine;
+            }
+        }
     }
 }

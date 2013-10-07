@@ -56,7 +56,7 @@ namespace Yalf.Reporting.Formatters
             throw new NotImplementedException(String.Format("{0} does not need to immplement this method, use the FormatMethodExitDelayed method so the calls are in the right order.", this.GetType().Name));
         }
 
-        public IList<string> FormatMethodExitDelayed(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
+        public IList<OrderedOutput> FormatMethodExitDelayed(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
         {
             var returnValue = (logEntry.ReturnRecorded && !filters.HideMethodReturnValue) ? logEntry.ReturnValue : "";
             Func<DateTime, String> lineBuilder = startTime => BuildOutputLine("Method", logEntry.MethodName, returnValue, startTime, logEntry.ElapsedMs, level, threadId);

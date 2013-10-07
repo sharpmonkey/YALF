@@ -263,6 +263,8 @@ namespace Yalf.Tests.Reporting
             var reportText = outputter.GetReport();
 
             // Assert
+            Console.WriteLine(reportText);
+
             List<String> output = reportText.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
             Assert.That(output.Count, Is.EqualTo(expectedText.Count), "Expected {0} output lines, but have {1}", expectedText.Count, output.Count);
             Assert.That(reportText, Is.Not.Empty, "Expected report text to be returned.");
