@@ -47,7 +47,7 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleMethodExit(MethodExit entry, int indentLevel, bool displayEnabled)
         {
-            if (this.Formatter is IIndentableSingleLineMethodFormatter)
+            if (this.Formatter is ISingleLineOutputLogFormatter)
             {
                 this.ManageNestedCallsForSingleLineFormats(entry, indentLevel, displayEnabled);
                 return;
@@ -58,7 +58,7 @@ namespace Yalf.Reporting.OutputHandlers
 
         private void ManageNestedCallsForSingleLineFormats(MethodExit entry, int indentLevel, bool displayEnabled)
         {
-            var output = this.Formatter.FormatMethodExitDelayed(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters);
+            var output = (this.Formatter as ISingleLineOutputLogFormatter).FormatMethodExitForSingleLineOutput(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters);
             if (output == null)
                 return;
 

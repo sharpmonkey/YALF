@@ -39,7 +39,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -60,7 +60,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -81,7 +81,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -102,7 +102,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -123,7 +123,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -180,7 +180,7 @@ namespace Yalf.Tests.Reporting
                     formatter.FormatMethodEntry(threadId, indentLevel++, ++lineNo, (entry as MethodEntry), filters);
                 else if (entry is MethodExit)
                 {
-                    var result = formatter.FormatMethodExitDelayed(threadId, indentLevel--, lineNo++, (entry as MethodExit), filters);
+                    var result = formatter.FormatMethodExitForSingleLineOutput(threadId, indentLevel--, lineNo++, (entry as MethodExit), filters);
                     if (result != null)
                         actualText.AddRange(result.Select(oo => oo.FormattedLine).ToList());
                 }
@@ -221,7 +221,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var outputText = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
@@ -233,7 +233,7 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var outputText = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
         }
 
         [Test, ExpectedException(typeof(NotImplementedException))]
@@ -250,7 +250,7 @@ namespace Yalf.Tests.Reporting
 
 
         [Test]
-        public void FormatMethodExitDelayed_NestedMethodCalls_CallsAreInCorrectOrder()
+        public void FormatMethodExitForSingleLineOutput_NestedMethodCalls_CallsAreInCorrectOrder()
         {
             // Arrange
             var formatter = new SingleLineFormatter();
@@ -284,7 +284,7 @@ namespace Yalf.Tests.Reporting
                     formatter.FormatMethodEntry(22, (entry as MethodEntry).StackLevel, ++lineNo, (MethodEntry)entry, filters);
                 else if (entry is MethodExit)
                 {
-                    var result = formatter.FormatMethodExitDelayed(22, (entry as MethodExit).StackLevel, lineNo, (MethodExit)entry, filters);
+                    var result = formatter.FormatMethodExitForSingleLineOutput(22, (entry as MethodExit).StackLevel, lineNo, (MethodExit)entry, filters);
                     if (result != null)
                         output.AddRange(result.Select(oo => oo.FormattedLine).ToArray());
 

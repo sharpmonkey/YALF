@@ -58,11 +58,6 @@ namespace Yalf.Reporting.Formatters
             return string.Format("[Exit] {0}{1} duration {2:0.####}ms", logEntry.MethodName, returnValue, logEntry.ElapsedMs);
         }
 
-        public IList<OrderedOutput> FormatMethodExitDelayed(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
-        {
-            throw new NotImplementedException(String.Format("{0} does not need to immplement this method, use the regular FormatMethodExit method.", this.GetType().Name));
-        }
-
         public string FormatException(int threadId, int level, int lineNo, ExceptionTrace logEntry, ILogFilters filters)
         {
             return string.Format("[Exception] {0} {1}", this.FormatTime(logEntry.Time), logEntry.Message);

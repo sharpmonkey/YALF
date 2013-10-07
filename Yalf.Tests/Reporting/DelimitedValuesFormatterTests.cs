@@ -55,7 +55,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.Not.EqualTo(0), "Expected one string to be returned");
@@ -75,7 +75,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.Not.EqualTo(0), "Expected one string to be returned");
@@ -95,7 +95,7 @@ namespace Yalf.Tests.Reporting
             formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var outputText = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
@@ -107,7 +107,7 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExitDelayed(1, 2, 33, entry, filters);
+            var outputText = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
         }
 
 
@@ -201,7 +201,7 @@ namespace Yalf.Tests.Reporting
                     formatter.FormatMethodEntry(threadId, indentLevel++, ++lineNo, (entry as MethodEntry), filters);
                 else if (entry is MethodExit)
                 {
-                    var result = formatter.FormatMethodExitDelayed(threadId, indentLevel--, lineNo++, (entry as MethodExit), filters);
+                    var result = formatter.FormatMethodExitForSingleLineOutput(threadId, indentLevel--, lineNo++, (entry as MethodExit), filters);
                     if (result != null)
                         actualText.AddRange(result.Select(oo => oo.FormattedLine).ToList());
                 }

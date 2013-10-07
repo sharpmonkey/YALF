@@ -4,7 +4,7 @@ using Yalf.LogEntries;
 
 namespace Yalf.Reporting.Formatters
 {
-    public class DelimitedValuesFormatter : ILogFormatter, IIndentableSingleLineMethodFormatter
+    public class DelimitedValuesFormatter : ILogFormatter, ISingleLineOutputLogFormatter
     {
         private const String DefaultDelimiter = ",";
         private readonly DefaultFormatter _default;
@@ -53,10 +53,10 @@ namespace Yalf.Reporting.Formatters
 
         public string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
         {
-            throw new NotImplementedException(String.Format("{0} does not need to immplement this method, use the FormatMethodExitDelayed method so the calls are in the right order.", this.GetType().Name));
+            throw new NotImplementedException(String.Format("{0} does not need to immplement this method, use the ISingleLineOutputLogFormatter.FormatMethodExitForSingleLineOutput interface method so the calls are in the right order.", this.GetType().Name));
         }
 
-        public IList<OrderedOutput> FormatMethodExitDelayed(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
+        public IList<OrderedOutput> FormatMethodExitForSingleLineOutput(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
         {
             var returnValue = (logEntry.ReturnRecorded && !filters.HideMethodReturnValue) ? logEntry.ReturnValue : "";
             Func<DateTime, String> lineBuilder = startTime => BuildOutputLine("Method", logEntry.MethodName, returnValue, startTime, logEntry.ElapsedMs, level, threadId);
@@ -80,29 +80,6 @@ namespace Yalf.Reporting.Formatters
             return String.Join(this.Delimiter,
                 new[] { this.LogContext, LogType, title, details, timeStamp.ToString(this.DateTimeFormat), duration.ToString("0.####"), level.ToString(), threadId.ToString() }
             );
-        }
-
-        public bool IsLogEventLine(string formattedLine)
-        {
-            return this.matchStartPrefix(formattedLine, String.Concat("Log", this.Delimiter));
-        }
-
-        public bool IsExceptionTraceLine(string formattedLine)
-        {
-            return this.matchStartPrefix(formattedLine, String.Concat("Exception", this.Delimiter));
-        }
-
-        private bool matchStartPrefix(string formattedLine, string prefix)
-        {
-            return (formattedLine.IndexOf(prefix, StringComparison.Ordinal) == 0);
-        }
-
-        public bool IndentIncreaseRequired(string formattedLine)
-        {
-            if (this.IsLogEventLine(formattedLine)) return false;
-            if (this.IsExceptionTraceLine(formattedLine)) return false;
-
-            return true;
         }
     }
 }

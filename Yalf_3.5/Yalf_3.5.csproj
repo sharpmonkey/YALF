@@ -96,11 +96,11 @@
     <Compile Include="..\Yalf\Reporting\Formatters\DelimitedValuesFormatter.cs">
       <Link>Reporting\Formatters\DelimitedValuesFormatter.cs</Link>
     </Compile>
-    <Compile Include="..\Yalf\Reporting\Formatters\IIndentableSingleLineMethodFormatter.cs">
-      <Link>Reporting\Formatters\IIndentableSingleLineMethodFormatter.cs</Link>
-    </Compile>
     <Compile Include="..\Yalf\Reporting\Formatters\ILogFormatter.cs">
       <Link>Reporting\Formatters\ILogFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\Yalf\Reporting\Formatters\ISingleLineOutputLogFormatter.cs">
+      <Link>Reporting\Formatters\ISingleLineOutputLogFormatter.cs</Link>
     </Compile>
     <Compile Include="..\Yalf\Reporting\Formatters\OrderedOutput.cs">
       <Link>Reporting\Formatters\OrderedOutput.cs</Link>
@@ -144,7 +144,7 @@
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
