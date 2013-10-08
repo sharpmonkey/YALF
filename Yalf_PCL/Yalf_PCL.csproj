@@ -120,6 +120,9 @@
     <Compile Include="..\Yalf\Reporting\OutputHandlers\ILogOutputHandler.cs">
       <Link>Reporting\OutputHandlers\ILogOutputHandler.cs</Link>
     </Compile>
+    <Compile Include="..\Yalf\Reporting\OutputHandlers\TextWriterOutputHandler.cs">
+      <Link>Reporting\OutputHandlers\TextWriterOutputHandler.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Yalf\yalf.snk">
@@ -135,7 +138,7 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

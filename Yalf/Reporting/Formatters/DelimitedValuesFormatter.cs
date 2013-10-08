@@ -37,12 +37,12 @@ namespace Yalf.Reporting.Formatters
 
         public string Indent(int level)
         {
-            throw new NotImplementedException(String.Format("There is no indent for a [{0}]", this.GetType().FullName));
+            return null;
         }
 
         public string FormatThread(ThreadData logEntry, ILogFilters filters)
         {
-            throw new NotImplementedException("There is no specific format for a thread data entry in a delimited list format, the thread id is included in the other log entry lines.");
+            return null;
         }
 
         public string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters)

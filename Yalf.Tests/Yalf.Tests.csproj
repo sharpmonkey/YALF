@@ -78,6 +78,7 @@
     <Compile Include="RecordTests.cs" />
     <Compile Include="Helpers\Verifier.cs" />
     <Compile Include="Helpers\WeaverHelper.cs" />
+    <Compile Include="Reporting\TextWriterOutputHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

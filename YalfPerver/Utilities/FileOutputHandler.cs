@@ -25,17 +25,15 @@ namespace YalfPerver.Utilities
         public int CurrentThreadId { get; private set; }
         public ILogFilters Filters { get; private set; }
 
-        private StringBuilder _buffer;
-
-        // This is good enough to generate the text for output.  Later we may want to use a file stream which means this won't be good enough.
-        private DefaultOutputHandler _outputHandler;
+        private TextWriter _writer;
+        private TextWriterOutputHandler _outputHandler;
 
         public void Initialise()
         {
             this.SetupFilePath();
 
-            _buffer = new StringBuilder(4096);
-            _outputHandler = new DefaultOutputHandler(this.Filters, this.Formatter);
+             _writer = new StreamWriter(new FileStream(this.FilePath, FileMode.CreateNew));
+            _outputHandler = new TextWriterOutputHandler(_writer, this.Filters, this.Formatter);
             _outputHandler.Initialise();
         }
 
@@ -82,8 +80,8 @@ namespace YalfPerver.Utilities
         public void Complete()
         {
             _outputHandler.Complete();
-
-            File.WriteAllText(this.FilePath, _outputHandler.GetReport());
+            _writer.Flush();
+            _writer.Dispose();
         }
 
         public string GetReport()

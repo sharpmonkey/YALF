@@ -290,7 +290,6 @@ namespace Yalf.Tests.Reporting
             }
         }
 
-
         private ILogFilters GetDefaultFilters()
         {
             var builder = new LogFiltersBuilder();

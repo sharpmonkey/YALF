@@ -11,8 +11,8 @@ namespace Yalf.Tests.Reporting
 {
     public class DelimitedValuesFormatterTests
     {
-        [Test, ExpectedException(typeof(NotImplementedException))]
-        public void FormatThread_ValidLog_ExceptionIsThrown()
+        [Test]
+        public void FormatThread_ValidLog_NullIsReturned()
         {
             // Arrange
             var filters = this.GetDefaultFilters();
@@ -22,8 +22,11 @@ namespace Yalf.Tests.Reporting
             var entry2 = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
             var entry = new ThreadData(22, String.Empty, new BaseEntry[] { entry1, entry2 });
 
-            // Act. Assert
+            // Act
             var outputText = formatter.FormatThread(entry, filters);
+
+            // Assert
+            Assert.That(outputText, Is.Null, "Did not expect any formatted text back for a delimited values formatter, threadid is in each row.");
         }
 
 
@@ -224,11 +227,11 @@ namespace Yalf.Tests.Reporting
             Console.WriteLine(String.Join(Environment.NewLine, actualText.ToArray()));
 
             Assert.That(actualText.Count, Is.EqualTo(expectedText.Count), "Expected {0} lines to be returned overall, but have {1}.", expectedText.Count, actualText.Count);
-            for (int logLine = 0; logLine < actualText.Count-1; logLine++)
+            for (int logLine = 0; logLine < actualText.Count - 1; logLine++)
             {
                 Assert.That(actualText[logLine], Is.EqualTo(expectedText[logLine]), "Text does not match on line {0}", logLine);
             }
-            
+
             //var misMatchedResults = actualText.Where((at, i) => (at != expectedText[i]));
             //Assert.That(misMatchedResults.Count(), Is.EqualTo(0), "{0} of the lines do not match.\nExpected:\n{1}\n\nActual:\n{2}"
             //                                                    , misMatchedResults.Count()
