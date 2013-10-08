@@ -4,7 +4,7 @@
     <id>Yalf.Fody</id>
     <version>$version$</version>
     <title>Yalf.Fody</title>
-    <authors>Gregor Pacnik</authors>
+    <authors>Matthew Langmaid, Gregor Pacnik</authors>
     <owners>Gregor Pacnik</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>https://github.com/sharpmonkey/YALF</projectUrl>
