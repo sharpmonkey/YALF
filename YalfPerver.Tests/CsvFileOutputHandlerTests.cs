@@ -11,7 +11,7 @@ using YalfPerver.Utilities;
 
 namespace YalfPerver.Tests
 {
-    public class FileOutputHandlerTests
+    public class CsvFileOutputHandlerTests
     {
         [Test]
         public void DelimitedValuesFormatter_NestedMethodCalls_ReportHasCorrectFormatting()
@@ -57,7 +57,7 @@ namespace YalfPerver.Tests
             var indentLevel = 0;
 
             // Act
-            var outputter = new FileOutputHandler(filters, formatter, tempFilePath);
+            var outputter = new CsvFileOutputHandler(filters, formatter, tempFilePath);
             outputter.Initialise();
 
             foreach (var entry in entries)

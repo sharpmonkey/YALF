@@ -378,7 +378,7 @@ namespace YalfPerver
 
             outputPath = Path.Combine(outputPath, String.Concat("YalfDump_", this.txtLogContext.Text, ".csv"));
 
-            ILogOutputHandler outputHandler = new FileOutputHandler(_filteredEntries.Filters, new DelimitedValuesFormatter(this.txtLogContext.Text, ","), outputPath);
+            ILogOutputHandler outputHandler = new CsvFileOutputHandler(_filteredEntries.Filters, new DelimitedValuesFormatter(this.txtLogContext.Text, ","), outputPath);
             LogReporter.Report(_filteredEntries, outputHandler);
 
             this.txtStatus.Text = String.Concat(this.txtStatus.Text, Environment.NewLine, "Yalf dump output to '", outputPath, "'.", Environment.NewLine);

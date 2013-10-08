@@ -8,9 +8,9 @@ using Yalf.Reporting.OutputHandlers;
 
 namespace YalfPerver.Utilities
 {
-    public class FileOutputHandler : ILogOutputHandler
+    public class CsvFileOutputHandler : ILogOutputHandler
     {
-        public FileOutputHandler(ILogFilters filters, ILogFormatter formatter, String filePath)
+        public CsvFileOutputHandler(ILogFilters filters, ILogFormatter formatter, String filePath)
         {
             if (filters == null)
                 throw new ArgumentNullException("filters", "A valid set of log filters is required for proper operation.");
