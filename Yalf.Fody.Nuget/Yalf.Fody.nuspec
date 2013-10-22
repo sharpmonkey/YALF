@@ -15,6 +15,7 @@
     <tags>ILWeaving, Fody, Cecil, Logging</tags>
     <dependencies>
       <dependency id="Fody" />
+      <dependency id="protobuf-net" />
     </dependencies>
   </metadata>
 </package>
