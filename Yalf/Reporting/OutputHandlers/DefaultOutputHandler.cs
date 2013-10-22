@@ -42,7 +42,8 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleMethodEntry(MethodEntry entry, int indentLevel, bool displayEnabled)
         {
-            this.AddLine(this.Formatter.FormatMethodEntry(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+            if (displayEnabled)
+                this.AddLine(this.Formatter.FormatMethodEntry(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
         }
 
         public void HandleMethodExit(MethodExit entry, int indentLevel, bool displayEnabled)
@@ -52,8 +53,9 @@ namespace Yalf.Reporting.OutputHandlers
                 this.ManageNestedCallsForSingleLineFormats(entry, indentLevel, displayEnabled);
                 return;
             }
-            
-            this.AddLine(this.Formatter.FormatMethodExit(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+
+            if (displayEnabled)
+                this.AddLine(this.Formatter.FormatMethodExit(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
         }
 
         private void ManageNestedCallsForSingleLineFormats(MethodExit entry, int indentLevel, bool displayEnabled)
@@ -62,7 +64,7 @@ namespace Yalf.Reporting.OutputHandlers
             if (output == null)
                 return;
 
-            foreach(OrderedOutput outputLine in output)
+            foreach (OrderedOutput outputLine in output)
             {
                 this.AddLine(outputLine.FormattedLine, indentLevel + outputLine.Level);
             }
@@ -75,7 +77,8 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleLogEvent(LogEvent entry, int indentLevel, bool displayEnabled)
         {
-            this.AddLine(this.Formatter.FormatLogEvent(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+            if (displayEnabled)
+                this.AddLine(this.Formatter.FormatLogEvent(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
         }
 
         public String GetReport()

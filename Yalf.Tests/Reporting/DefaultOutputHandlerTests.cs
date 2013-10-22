@@ -55,6 +55,24 @@ namespace Yalf.Tests.Reporting
         }
 
         [Test]
+        public void HandleMethodEntry_LogNotEnabled_NoTextIsReturned()
+        {
+            // Arrange
+            var filters = this.GetDefaultFilters();
+            var output = new DefaultOutputHandler(filters);
+            var entry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
+            output.Initialise();
+
+            // Act
+            output.HandleMethodEntry(entry, 1, false);
+            output.Complete();
+
+            // Assert
+            var outputText = output.GetReport();
+            Assert.That(outputText, Is.Empty, "Expected no text in the report output");
+        }
+
+        [Test]
         public void HandleMethodExit_ValidLog_ExpectedTextIsReturned()
         {
             // Arrange
@@ -72,6 +90,24 @@ namespace Yalf.Tests.Reporting
             var outputText = output.GetReport();
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
+        }
+
+        [Test]
+        public void HandleMethodExit_LogNotEnabled_NoTextIsReturned()
+        {
+            // Arrange
+            var filters = this.GetDefaultFilters();
+            var output = new DefaultOutputHandler(filters);
+            var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
+            output.Initialise();
+
+            // Act
+            output.HandleMethodExit(entry, 1, false);
+            output.Complete();
+
+            // Assert
+            var outputText = output.GetReport();
+            Assert.That(outputText, Is.Empty, "Expected no text in the report output");
         }
 
         [Test]
@@ -171,6 +207,26 @@ namespace Yalf.Tests.Reporting
         }
 
         [Test]
+        public void HandleLogEntry_LogNotEnabled_NoTextIsReturned()
+        {
+            // Arrange
+            var filters = this.GetDefaultFilters();
+            var output = new DefaultOutputHandler(filters);
+            var entry = new LogEvent(LogLevel.Info, DateTime.Parse("2022-10-22 22:22:31.678"), "This is a log entry");
+
+            output.Initialise();
+
+            // Act
+            output.HandleLogEvent(entry, 1, false);
+            output.Complete();
+
+            // Assert
+            var outputText = output.GetReport();
+            Assert.That(outputText, Is.Empty, "Expected no text in the report output");
+        }
+
+
+        [Test]
         public void HandleException_ValidLog_ExpectedTextIsReturned()
         {
             // Arrange
@@ -256,6 +312,87 @@ namespace Yalf.Tests.Reporting
                 else if (entry is ExceptionTrace)
                 {
                     outputter.HandleException((entry as ExceptionTrace), indentLevel);
+                }
+            }
+
+            outputter.Complete();
+            var reportText = outputter.GetReport();
+
+            // Assert
+            Console.WriteLine(reportText);
+
+            List<String> output = reportText.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            Assert.That(output.Count, Is.EqualTo(expectedText.Count), "Expected {0} output lines, but have {1}", expectedText.Count, output.Count);
+            Assert.That(reportText, Is.Not.Empty, "Expected report text to be returned.");
+            for (int index = 0; index < expectedText.Count; index++)
+            {
+                Console.WriteLine("Checking actual\r\n\"{0}\" with expected\r\n\"{1}\"", output[index], expectedText[index]);
+                Assert.That(output[index], Is.EqualTo(expectedText[index]), "Not the expected text for line {0}", index + 1);
+            }
+        }
+
+        [Test]
+        public void SingleLineFormatter_NestedMethodCallsWithSomeMethodsDisabled_ReportDoesNotHaveDisabledLogs()
+        {
+            // Arrange
+            var formatter = new SingleLineFormatter();
+            var startDateTime = DateTime.Now;
+            var entries = new Tuple<bool, BaseEntry>[]
+                {
+                    new Tuple<bool, BaseEntry>(true, new MethodEntry(1, "TopLevelMethod", null, startDateTime)),
+                    new Tuple<bool, BaseEntry>(true, new MethodExit(1, "TopLevelMethod", 233, true, "blackSheep")),
+                    new Tuple<bool, BaseEntry>(true, new MethodEntry(1, "FirstMethod", null, startDateTime.AddSeconds(12))),
+                    new Tuple<bool, BaseEntry>(false, new MethodEntry(2, "SecondMethod", null, startDateTime.AddSeconds(45))),
+                    new Tuple<bool, BaseEntry>(true, new LogEvent(LogLevel.Info, startDateTime.AddSeconds(47), "Information log message here")), 
+                    new Tuple<bool, BaseEntry>(true, new ExceptionTrace(new ArgumentNullException("lineNo", "Test the log"), startDateTime.AddSeconds(53))), 
+                    new Tuple<bool, BaseEntry>(true, new MethodEntry(3, "ThirdMethod", null, startDateTime.AddSeconds(75))),
+                    new Tuple<bool, BaseEntry>(true, new MethodExit(3, "ThirdMethod", 100, false, null)),
+                    new Tuple<bool, BaseEntry>(false, new MethodEntry(3, "FourthMethod", null, startDateTime.AddSeconds(80))),
+                    new Tuple<bool, BaseEntry>(false, new MethodExit(3, "FourthMethod", 57, false, null)),
+                    new Tuple<bool, BaseEntry>(false, new MethodExit(2, "SecondMethod", 178, false, null)),
+                    new Tuple<bool, BaseEntry>(true, new MethodExit(1, "FirstMethod", 200, false, null)),
+                    new Tuple<bool, BaseEntry>(true, new MethodEntry(1, "TopLevelMethod2", null, startDateTime.AddSeconds(99))),
+                    new Tuple<bool, BaseEntry>(true, new MethodExit(1, "TopLevelMethod2", 488, true, "whiteSheep")),
+                };
+
+            var expectedText = (new string[]
+                                    {
+                                        string.Format("TopLevelMethod(blackSheep) started {0:HH:mm:ss.fff} duration 233ms", startDateTime),
+                                        string.Format("FirstMethod() started {0:HH:mm:ss.fff} duration 200ms", startDateTime.AddSeconds(12)),
+                                        string.Format("    [Log] [Info] Information log message here"),
+                                        string.Format("    [Exception] {0:HH:mm:ss.fff} Test the log", startDateTime.AddSeconds(53)),
+                                        string.Format("Parameter name: lineNo"),
+                                        string.Format("    ThirdMethod() started {0:HH:mm:ss.fff} duration 100ms", startDateTime.AddSeconds(75)),
+                                        string.Format("TopLevelMethod2(whiteSheep) started {0:HH:mm:ss.fff} duration 488ms", startDateTime.AddSeconds(99))
+                                    }
+                               ).ToList();
+
+            var filters = this.GetDefaultFilters();
+            var indentLevel = 0;
+
+            // Act
+            var outputter = new DefaultOutputHandler(filters, formatter);
+            outputter.Initialise();
+
+            foreach (var entry in entries)
+            {
+                if (entry.Item2 is MethodEntry)
+                {
+                    outputter.HandleMethodEntry((entry.Item2 as MethodEntry), indentLevel, entry.Item1);
+                    ++indentLevel;
+                }
+                else if (entry.Item2 is MethodExit)
+                {
+                    --indentLevel;
+                    outputter.HandleMethodExit((entry.Item2 as MethodExit), indentLevel, entry.Item1);
+                }
+                else if (entry.Item2 is LogEvent)
+                {
+                    outputter.HandleLogEvent((entry.Item2 as LogEvent), indentLevel, entry.Item1);
+                }
+                else if (entry.Item2 is ExceptionTrace)
+                {
+                    outputter.HandleException((entry.Item2 as ExceptionTrace), indentLevel);
                 }
             }
 
