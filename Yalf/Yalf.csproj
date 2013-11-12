@@ -81,6 +81,7 @@
     <Compile Include="Reporting\ILogFilters.cs" />
     <Compile Include="Reporting\LogFiltersBuilder.cs" />
     <Compile Include="Reporting\MethodLogInformation.cs" />
+    <Compile Include="Reporting\OutputHandlers\ThreadCollectionOutputHandler.cs" />
     <Compile Include="Reporting\OutputHandlers\TextWriterOutputHandler.cs" />
     <Compile Include="Reporting\OutputHandlers\DefaultOutputHandler.cs" />
     <Compile Include="Reporting\OutputHandlers\ILogOutputHandler.cs" />

@@ -135,6 +135,9 @@
     <Compile Include="..\Yalf\Reporting\OutputHandlers\TextWriterOutputHandler.cs">
       <Link>Reporting\OutputHandlers\TextWriterOutputHandler.cs</Link>
     </Compile>
+    <Compile Include="..\Yalf\Reporting\OutputHandlers\ThreadCollectionOutputHandler.cs">
+      <Link>Reporting\OutputHandlers\ThreadCollectionOutputHandler.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Yalf\yalf.snk">
@@ -147,7 +150,7 @@
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="b7459ca6-43bf-49f3-88e2-805b52f34db3" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

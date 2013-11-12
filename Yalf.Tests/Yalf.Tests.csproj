@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="LogEntries\BaseEntryTest.cs" />
     <Compile Include="LogEntries\ProtobufTest.cs" />
+    <Compile Include="Reporting\ThreadCollectionOutputHandlerTests.cs" />
     <Compile Include="Reporting\DelimitedValuesFormatterTests.cs" />
     <Compile Include="Reporting\DefaultFormatterTests.cs" />
     <Compile Include="Reporting\DefaultOutputHandlerTests.cs" />
