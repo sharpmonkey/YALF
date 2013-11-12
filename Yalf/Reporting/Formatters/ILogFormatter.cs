@@ -10,9 +10,9 @@ namespace Yalf.Reporting.Formatters
         String Indent(int level);
 
         String FormatThread(ThreadData logEntry, ILogFilters filters);
-        String FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters);
-        String FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters);
+        string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters, bool displayEnabled);
+        string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters, bool displayEnabled);
         String FormatException(int threadId, int level, int lineNo, ExceptionTrace logEntry, ILogFilters filters);
-        String FormatLogEvent(int threadId, int level, int lineNo, LogEvent logEntry, ILogFilters filters);
+        string FormatLogEvent(int threadId, int level, int lineNo, LogEvent logEntry, ILogFilters filters, bool displayEnabled);
     }
 }

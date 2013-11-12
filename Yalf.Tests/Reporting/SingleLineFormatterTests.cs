@@ -20,7 +20,7 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
 
             // Act
-            var outputText = formatter.FormatMethodEntry(1, 2, 33, entry, filters);
+            var outputText = formatter.FormatMethodEntry(1, 2, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Null, "Expected nothing to be returned for a method entry, everything is printed in the methodExit handling.");
@@ -36,10 +36,10 @@ namespace Yalf.Tests.Reporting
             var expectedText = "Yalf.TestMethod(returnVal) started 22:22:31.678 duration 345ms";
 
             var relatedEntry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters, true);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters, true);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -57,10 +57,10 @@ namespace Yalf.Tests.Reporting
             var expectedText = "Yalf.TestMethod() started 22:22:31.678 duration 345ms";
 
             var relatedEntry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters, true);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters, true);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -78,10 +78,10 @@ namespace Yalf.Tests.Reporting
             var expectedText = "Yalf.TestMethod() started 22:22:31.678 duration 345ms";
 
             var relatedEntry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters, true);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters, true);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -99,10 +99,10 @@ namespace Yalf.Tests.Reporting
             var expectedText = "Yalf.TestMethod(returnVal) started 22:22:31.678";
 
             var relatedEntry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters, true);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters, true);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -120,10 +120,10 @@ namespace Yalf.Tests.Reporting
             var expectedText = "Yalf.TestMethod(returnVal) duration 345ms";
 
             var relatedEntry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters, true);
 
             // Act
-            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
+            var orderedOutput = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters, true);
 
             // Assert
             Assert.That(orderedOutput.Count, Is.EqualTo(1), "Expected one string to be returned");
@@ -177,16 +177,16 @@ namespace Yalf.Tests.Reporting
             foreach (var entry in entries)
             {
                 if (entry is MethodEntry)
-                    formatter.FormatMethodEntry(threadId, indentLevel++, ++lineNo, (entry as MethodEntry), filters);
+                    formatter.FormatMethodEntry(threadId, indentLevel++, ++lineNo, (entry as MethodEntry), filters, true);
                 else if (entry is MethodExit)
                 {
-                    var result = formatter.FormatMethodExitForSingleLineOutput(threadId, indentLevel--, lineNo++, (entry as MethodExit), filters);
+                    var result = formatter.FormatMethodExitForSingleLineOutput(threadId, indentLevel--, lineNo++, (entry as MethodExit), filters, true);
                     if (result != null)
                         actualText.AddRange(result.Select(oo => oo.FormattedLine).ToList());
                 }
                 else if (entry is LogEvent)
                 {
-                    var result = formatter.FormatLogEvent(threadId, indentLevel, lineNo++, (entry as LogEvent), filters);
+                    var result = formatter.FormatLogEvent(threadId, indentLevel, lineNo++, (entry as LogEvent), filters, true);
                     if (result != null)
                         actualText.Add(result);
                 }
@@ -218,10 +218,10 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
 
             var relatedEntry = new MethodEntry(1, "Yalf.DifferentMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters);
+            formatter.FormatMethodEntry(1, 2, 33, relatedEntry, filters, true);
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
+            var outputText = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters, true);
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
@@ -233,7 +233,7 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters);
+            var outputText = formatter.FormatMethodExitForSingleLineOutput(1, 2, 33, entry, filters, true);
         }
 
         [Test, ExpectedException(typeof(NotImplementedException))]
@@ -245,7 +245,7 @@ namespace Yalf.Tests.Reporting
             var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
 
             // Act, Assert
-            var outputText = formatter.FormatMethodExit(1, 2, 33, entry, filters);
+            var outputText = formatter.FormatMethodExit(1, 2, 33, entry, filters, true);
         }
 
 
@@ -281,10 +281,10 @@ namespace Yalf.Tests.Reporting
             foreach (var entry in entries)
             {
                 if (entry is MethodEntry)
-                    formatter.FormatMethodEntry(22, (entry as MethodEntry).StackLevel, ++lineNo, (MethodEntry)entry, filters);
+                    formatter.FormatMethodEntry(22, (entry as MethodEntry).StackLevel, ++lineNo, (MethodEntry)entry, filters, true);
                 else if (entry is MethodExit)
                 {
-                    var result = formatter.FormatMethodExitForSingleLineOutput(22, (entry as MethodExit).StackLevel, lineNo, (MethodExit)entry, filters);
+                    var result = formatter.FormatMethodExitForSingleLineOutput(22, (entry as MethodExit).StackLevel, lineNo, (MethodExit)entry, filters, true);
                     if (result != null)
                         output.AddRange(result.Select(oo => oo.FormattedLine).ToArray());
 

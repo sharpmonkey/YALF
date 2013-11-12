@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Yalf.LogEntries;
 
 namespace Yalf.Reporting.Formatters
@@ -36,9 +35,9 @@ namespace Yalf.Reporting.Formatters
             return String.Format(outputFormat, logEntry.ThreadId, logEntry.ThreadName);
         }
 
-        public string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters)
+        public string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters, bool displayEnabled)
         {
-            if (filters.HideEnterMethodLogs)
+            if ((filters.HideEnterMethodLogs) || (!displayEnabled))
                 return null;
 
             var args = ((logEntry.Arguments == null) || filters.HideMethodParameters) ? "" : string.Join(", ", logEntry.Arguments);
@@ -46,9 +45,9 @@ namespace Yalf.Reporting.Formatters
             return string.Format("[Enter] {0}{1}({2})", timeText, logEntry.MethodName, args);
         }
 
-        public string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
+        public string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters, bool displayEnabled)
         {
-            if (filters.HideExitMethodLogs)
+            if ((filters.HideExitMethodLogs) || (!displayEnabled))
                 return null;
 
             var returnValue = (logEntry.ReturnRecorded && !filters.HideMethodReturnValue) ? "(" + logEntry.ReturnValue + ")" : "()";
@@ -63,8 +62,11 @@ namespace Yalf.Reporting.Formatters
             return string.Format("[Exception] {0} {1}", this.FormatTime(logEntry.Time), logEntry.Message);
         }
 
-        public string FormatLogEvent(int threadId, int level, int lineNo, LogEvent logEntry, ILogFilters filters)
+        public string FormatLogEvent(int threadId, int level, int lineNo, LogEvent logEntry, ILogFilters filters, bool displayEnabled)
         {
+            if (!displayEnabled)
+                return null;
+
             return string.Format("[Log] [{0}] {1}", logEntry.Level, logEntry.Message);
         }
 

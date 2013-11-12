@@ -41,7 +41,7 @@ namespace Yalf.Tests.Reporting
             var filters = this.GetDefaultFilters();
             var output = new DefaultOutputHandler(filters);
             var entry = new MethodEntry(1, "Yalf.TestMethod", new[] { "param1", "param2" }, DateTime.Parse("2022-10-22 22:22:31.678"));
-            var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Enter] 22:22:31.678 Yalf.TestMethod(param1, param2)", Environment.NewLine);
+            var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Enter] 22:22:31.678 Yalf.TestMethod(param1, param2)");
             output.Initialise();
 
             // Act
@@ -79,7 +79,7 @@ namespace Yalf.Tests.Reporting
             var filters = this.GetDefaultFilters();
             var output = new DefaultOutputHandler(filters);
             var entry = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
-            var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Exit] Yalf.TestMethod(returnVal) duration 345ms", Environment.NewLine);
+            var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Exit] Yalf.TestMethod(returnVal) duration 345ms");
             output.Initialise();
 
             // Act
@@ -121,7 +121,7 @@ namespace Yalf.Tests.Reporting
             var entry2 = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
             var entry = new ThreadData(22, "YalfThread", new BaseEntry[] { entry1, entry2 });
 
-            var expectedText = String.Concat("[Thread 22 'YalfThread']", Environment.NewLine);
+            var expectedText = String.Concat("[Thread 22 'YalfThread']");
             output.Initialise();
 
             // Act
@@ -146,7 +146,7 @@ namespace Yalf.Tests.Reporting
             var entry2 = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
             var entry = new ThreadData(22, null, new BaseEntry[] { entry1, entry2 });
 
-            var expectedText = String.Concat("[Thread 22]", Environment.NewLine);
+            var expectedText = String.Concat("[Thread 22]");
             output.Initialise();
 
             // Act
@@ -171,7 +171,7 @@ namespace Yalf.Tests.Reporting
             var entry2 = new MethodExit(1, "Yalf.TestMethod", 345, true, "returnVal");
             var entry = new ThreadData(22, String.Empty, new BaseEntry[] { entry1, entry2 });
 
-            var expectedText = String.Concat("[Thread 22]", Environment.NewLine);
+            var expectedText = String.Concat("[Thread 22]");
             output.Initialise();
 
             // Act
@@ -193,7 +193,7 @@ namespace Yalf.Tests.Reporting
             var output = new DefaultOutputHandler(filters);
             var entry = new LogEvent(LogLevel.Info, DateTime.Parse("2022-10-22 22:22:31.678"), "This is a log entry");
 
-            var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Log] [Info] This is a log entry", Environment.NewLine);
+            var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Log] [Info] This is a log entry");
             output.Initialise();
 
             // Act
@@ -235,7 +235,7 @@ namespace Yalf.Tests.Reporting
             var ex = this.GenerateExceptionWithStackTrace();
             var entry = new ExceptionTrace(ex, DateTime.Parse("2022-10-22 22:22:31.678"));
 
-            var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Exception] 22:22:31.678 Attempted to divide by zero.", Environment.NewLine);
+            var expectedText = String.Concat("".PadLeft(2, output.Formatter.IndentChar), "[Exception] 22:22:31.678 Attempted to divide by zero.");
             output.Initialise();
 
             // Act

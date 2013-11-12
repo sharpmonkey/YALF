@@ -19,7 +19,7 @@ namespace Yalf.Tests.Reporting
             var expectedText = "[Enter] 22:22:31.678 Yalf.TestMethod(param1, param2)";
 
             // Act
-            var outputText = formatter.FormatMethodEntry(22, 1, 33, entry, filters);
+            var outputText = formatter.FormatMethodEntry(22, 1, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -36,7 +36,7 @@ namespace Yalf.Tests.Reporting
             var expectedText = "[Enter] 22:22:31.678 Yalf.TestMethod()";
 
             // Act
-            var outputText = formatter.FormatMethodEntry(22, 1, 33, entry, filters);
+            var outputText = formatter.FormatMethodEntry(22, 1, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -53,7 +53,7 @@ namespace Yalf.Tests.Reporting
             var expectedText = "[Enter] Yalf.TestMethod(param1, param2)";
 
             // Act
-            var outputText = formatter.FormatMethodEntry(22, 1, 33, entry, filters);
+            var outputText = formatter.FormatMethodEntry(22, 1, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -70,7 +70,7 @@ namespace Yalf.Tests.Reporting
             var expectedText = "[Exit] Yalf.TestMethod(returnVal) duration 345ms";
 
             // Act
-            var outputText = formatter.FormatMethodExit(22, 1, 33, entry, filters);
+            var outputText = formatter.FormatMethodExit(22, 1, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -87,7 +87,7 @@ namespace Yalf.Tests.Reporting
             var expectedText = "[Exit] Yalf.TestMethod() duration 345ms";
 
             // Act
-            var outputText = formatter.FormatMethodExit(22, 1, 33, entry, filters);
+            var outputText = formatter.FormatMethodExit(22, 1, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -104,7 +104,7 @@ namespace Yalf.Tests.Reporting
             var expectedText = "[Exit] Yalf.TestMethod() duration 345ms";
 
             // Act
-            var outputText = formatter.FormatMethodExit(22, 1, 33, entry, filters);
+            var outputText = formatter.FormatMethodExit(22, 1, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -121,7 +121,7 @@ namespace Yalf.Tests.Reporting
             var expectedText = "[Exit] Yalf.TestMethod(returnVal)";
 
             // Act
-            var outputText = formatter.FormatMethodExit(22, 1, 33, entry, filters);
+            var outputText = formatter.FormatMethodExit(22, 1, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
@@ -188,7 +188,7 @@ namespace Yalf.Tests.Reporting
             // Act
             var outputText = formatter.FormatThread(entry, filters);
 
-            // Assert
+            // Assert   
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");
             Assert.That(outputText, Is.EqualTo(expectedText), "Not the expected output text, you may need to adjust the test if the formatter has been changed.");
         }
@@ -204,7 +204,7 @@ namespace Yalf.Tests.Reporting
             var expectedText = "[Log] [Info] This is a log entry";
 
             // Act
-            var outputText = formatter.FormatLogEvent(22, 1, 33, entry, filters);
+            var outputText = formatter.FormatLogEvent(22, 1, 33, entry, filters, true);
 
             // Assert
             Assert.That(outputText, Is.Not.Empty, "Expected a string to be returned");

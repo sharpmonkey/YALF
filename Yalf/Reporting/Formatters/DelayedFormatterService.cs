@@ -18,18 +18,29 @@ namespace Yalf.Reporting.Formatters
             this.DateTimeFormat = dateTimeFormat;
         }
 
-        public string HandleMethodEntry(MethodEntry logEntry)
+        public string HandleMethodEntry(MethodEntry logEntry, bool displayEnabled)
         {
             // entry details are merged with exit details
+            if (displayEnabled)
+            {
+                _lastMethodEntry.Push(logEntry);
+                _orderedBuffer.Add(new LogEntryTracker(_currentNestedLevel, logEntry, null));
+            }
 
-            _lastMethodEntry.Push(logEntry);
-            _orderedBuffer.Add(new LogEntryTracker(_currentNestedLevel, logEntry, null));
             _currentNestedLevel++;
             return null;
         }
 
-        public IList<OrderedOutput> HandleMethodExit(MethodExit logEntry, int lineNo, ILogFilters filters, Func<DateTime, string> lineBuilder)
+        public IList<OrderedOutput> HandleMethodExit(MethodExit logEntry, int lineNo, ILogFilters filters, Func<DateTime, string> lineBuilder, bool displayEnabled)
         {
+            if (!displayEnabled)
+            {
+                // method is not actually displayed, we are tracking the nesting level for other items displayed such as logs, exceptions, etc
+                _currentNestedLevel--;
+                return null;
+            }
+
+
             if ((_lastMethodEntry == null) || (_lastMethodEntry.Count <= 0))
                 throw new InvalidOperationException(String.Format("No related Method Entry log has been set for '{0}' at line {1:0000} - there could be a problem with the yalf logs."
                                                                 , logEntry.MethodName, lineNo));

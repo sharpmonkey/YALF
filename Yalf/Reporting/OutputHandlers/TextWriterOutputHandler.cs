@@ -44,7 +44,7 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleMethodEntry(MethodEntry entry, int indentLevel, bool displayEnabled)
         {
-            this.AddLine(this.Formatter.FormatMethodEntry(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+            this.AddLine(this.Formatter.FormatMethodEntry(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters, displayEnabled), indentLevel);
         }
 
         public void HandleMethodExit(MethodExit entry, int indentLevel, bool displayEnabled)
@@ -55,12 +55,12 @@ namespace Yalf.Reporting.OutputHandlers
                 return;
             }
 
-            this.AddLine(this.Formatter.FormatMethodExit(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+            this.AddLine(this.Formatter.FormatMethodExit(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters, displayEnabled), indentLevel);
         }
 
         private void ManageNestedCallsForSingleLineFormats(MethodExit entry, int indentLevel, bool displayEnabled)
         {
-            var output = (this.Formatter as ISingleLineOutputLogFormatter).FormatMethodExitForSingleLineOutput(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters);
+            var output = (this.Formatter as ISingleLineOutputLogFormatter).FormatMethodExitForSingleLineOutput(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters, displayEnabled);
             if (output == null)
                 return;
 
@@ -77,7 +77,7 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleLogEvent(LogEvent entry, int indentLevel, bool displayEnabled)
         {
-            this.AddLine(this.Formatter.FormatLogEvent(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+            this.AddLine(this.Formatter.FormatLogEvent(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters, displayEnabled), indentLevel);
         }
 
         public String GetReport()

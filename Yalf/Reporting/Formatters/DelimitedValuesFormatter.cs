@@ -45,23 +45,31 @@ namespace Yalf.Reporting.Formatters
             return null;
         }
 
-        public string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters)
+        public string FormatMethodEntry(int threadId, int level, int lineNo, MethodEntry logEntry, ILogFilters filters, bool displayEnabled)
         {
             // entry details are merged with exit details
-            return _delayedService.HandleMethodEntry(logEntry);
+            return _delayedService.HandleMethodEntry(logEntry, displayEnabled);
         }
 
-        public string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
+        public string FormatMethodExit(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters, bool displayEnabled)
         {
             throw new NotImplementedException(String.Format("{0} does not need to immplement this method, use the ISingleLineOutputLogFormatter.FormatMethodExitForSingleLineOutput interface method so the calls are in the right order.", this.GetType().Name));
         }
 
-        public IList<OrderedOutput> FormatMethodExitForSingleLineOutput(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters)
+        public IList<OrderedOutput> FormatMethodExitForSingleLineOutput(int threadId, int level, int lineNo, MethodExit logEntry, ILogFilters filters, bool displayEnabled)
+        {
+            Func<DateTime, String> lineBuilder = null;
+
+            if (displayEnabled)
+                lineBuilder = CreateLineBuilderGenerator(threadId, level, logEntry, filters);
+            
+            return _delayedService.HandleMethodExit(logEntry, lineNo, filters, lineBuilder, displayEnabled);
+        }
+
+        private Func<DateTime, string> CreateLineBuilderGenerator(int threadId, int level, MethodExit logEntry, ILogFilters filters)
         {
             var returnValue = (logEntry.ReturnRecorded && !filters.HideMethodReturnValue) ? logEntry.ReturnValue : "";
-            Func<DateTime, String> lineBuilder = startTime => BuildOutputLine("Method", logEntry.MethodName, returnValue, startTime, logEntry.ElapsedMs, level, threadId);
-
-            return _delayedService.HandleMethodExit(logEntry, lineNo, filters, lineBuilder);
+            return startTime => BuildOutputLine("Method", logEntry.MethodName, returnValue, startTime, logEntry.ElapsedMs, level, threadId);
         }
 
         public string FormatException(int threadId, int level, int lineNo, ExceptionTrace logEntry, ILogFilters filters)
@@ -70,8 +78,11 @@ namespace Yalf.Reporting.Formatters
             return _delayedService.HandleException(this.BuildOutputLine("Exception", logEntry.Message.Replace(Environment.NewLine, " "), stackTrace, logEntry.Time, 0, level, threadId));
         }
 
-        public string FormatLogEvent(int threadId, int level, int lineNo, LogEvent logEntry, ILogFilters filters)
+        public string FormatLogEvent(int threadId, int level, int lineNo, LogEvent logEntry, ILogFilters filters, bool displayEnabled)
         {
+            if (!displayEnabled)
+                return null;
+
             return _delayedService.HandleLogEvent(this.BuildOutputLine("Log", logEntry.Message, "", logEntry.Time, 0, level, threadId));
         }
 

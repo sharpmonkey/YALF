@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text;
+using System.Collections.Generic;
 using Yalf.LogEntries;
 using Yalf.Reporting.Formatters;
 
@@ -7,7 +7,7 @@ namespace Yalf.Reporting.OutputHandlers
 {
     public class DefaultOutputHandler : ILogOutputHandler
     {
-        private StringBuilder _buffer;
+        protected List<String> Buffer;
         private ILogFormatter _formatter;
         private int _lineNumber = 0;
         public DefaultOutputHandler(ILogFilters filters) : this(filters, new DefaultFormatter()) { }
@@ -24,12 +24,12 @@ namespace Yalf.Reporting.OutputHandlers
 
         public ILogFormatter Formatter { get; protected set; }
 
-        public int CurrentThreadId { get; private set; }
-        public ILogFilters Filters { get; private set; }
+        public int CurrentThreadId { get; protected set; }
+        public ILogFilters Filters { get; protected set; }
 
         public void Initialise()
         {
-            _buffer = new StringBuilder(4096);
+            Buffer = new List<string>(4096);
             if (_formatter == null)
                 _formatter = new DefaultFormatter();
         }
@@ -42,8 +42,7 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleMethodEntry(MethodEntry entry, int indentLevel, bool displayEnabled)
         {
-            if (displayEnabled)
-                this.AddLine(this.Formatter.FormatMethodEntry(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+                this.AddLine(this.Formatter.FormatMethodEntry(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters, displayEnabled), indentLevel);
         }
 
         public void HandleMethodExit(MethodExit entry, int indentLevel, bool displayEnabled)
@@ -54,13 +53,15 @@ namespace Yalf.Reporting.OutputHandlers
                 return;
             }
 
-            if (displayEnabled)
-                this.AddLine(this.Formatter.FormatMethodExit(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+            this.AddLine(this.Formatter.FormatMethodExit(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters, displayEnabled), indentLevel);
         }
 
         private void ManageNestedCallsForSingleLineFormats(MethodExit entry, int indentLevel, bool displayEnabled)
         {
-            var output = (this.Formatter as ISingleLineOutputLogFormatter).FormatMethodExitForSingleLineOutput(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters);
+            if (!displayEnabled)
+                return;
+
+            var output = (this.Formatter as ISingleLineOutputLogFormatter).FormatMethodExitForSingleLineOutput(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters, displayEnabled);
             if (output == null)
                 return;
 
@@ -77,13 +78,12 @@ namespace Yalf.Reporting.OutputHandlers
 
         public void HandleLogEvent(LogEvent entry, int indentLevel, bool displayEnabled)
         {
-            if (displayEnabled)
-                this.AddLine(this.Formatter.FormatLogEvent(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters), indentLevel);
+                this.AddLine(this.Formatter.FormatLogEvent(this.CurrentThreadId, indentLevel, ++_lineNumber, entry, this.Filters, displayEnabled), indentLevel);
         }
 
         public String GetReport()
         {
-            return _buffer.ToString();
+            return String.Join(Environment.NewLine, Buffer.ToArray());
         }
 
         public void Complete()
@@ -93,7 +93,7 @@ namespace Yalf.Reporting.OutputHandlers
         private void AddLine(string text, int level)
         {
             if (text != null)
-                _buffer.Append(this.Formatter.Indent(level)).AppendLine(text);
+                Buffer.Add(String.Concat(this.Formatter.Indent(level), text));
         }
     }
 }
