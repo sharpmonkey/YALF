@@ -17,5 +17,6 @@ namespace Yalf.Reporting
         bool SingleLineFormat { get; }
         DateTime TimeStampFrom { get; }
         DateTime TimeStampTo { get; }
+        int ThreadId { get; }
     }
 }

@@ -33,9 +33,9 @@
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.btnScrollToCaret = new System.Windows.Forms.ToolStripButton();
             this.btnClear = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.txtFindText = new System.Windows.Forms.ToolStripTextBox();
             this.btnFind = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,6 +90,11 @@
             this.btnClear.Text = "Clear";
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // txtFindText
             // 
             this.txtFindText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -106,11 +111,6 @@
             this.btnFind.Size = new System.Drawing.Size(34, 22);
             this.btnFind.Text = "Find";
             this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // ConsoleOutput
             // 

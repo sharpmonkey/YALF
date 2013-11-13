@@ -40,6 +40,9 @@ namespace YalfPerver
             this.lblLastLogEntry.BorderStyle = BorderStyle.None;
 
             this.InitialiseLogEntryDisplay(this.GetCurrentYalfEntries());
+
+            this.DisplayRegExHelp(this.chkShowRegExHelp.Checked);
+            this.DisplayThreadWindow(this.chkUseThreadGroupDisplay.Checked);
         }
 
         private void btnClean_Click(object sender, EventArgs e)
@@ -106,6 +109,7 @@ namespace YalfPerver
             {
                 var output = LogReporter.Report(_filteredEntries, new DefaultOutputHandler(_filteredEntries.Filters, formatter));
                 consoleOutput.Write((output as DefaultOutputHandler).GetReport());
+                consoleOutput.GoToStartOfList();
             }
             catch (Exception ex)
             {
@@ -233,11 +237,80 @@ namespace YalfPerver
             this.RefreshDisplay();
         }
 
+        private bool _refreshingDisplay;
         private void RefreshDisplay()
         {
-            this.ApplyCurrentFilters();
-            this.SynchroniseTreeView();
-            this.DisplayLogEntries();
+            try
+            {
+                if (_refreshingDisplay)
+                    return;
+
+                _refreshingDisplay = true;
+                this.FillThreadList(); // This can go first as ApplyCurrentFilters does not touch threads at this time.
+                this.ApplyCurrentFilters();
+                this.SynchroniseTreeView();
+                this.DisplayLogEntries();
+            }
+            finally
+            {
+                _refreshingDisplay = false;
+            }
+        }
+
+        private class ListableThreadData
+        {
+            public int ThreadId { get; private set; }
+            public String DisplayText { get; private set; }
+            public ThreadData OriginalData { get; private set; }
+
+            public ListableThreadData(ThreadData threadData)
+            {
+                this.ThreadId = threadData.ThreadId;
+                this.DisplayText = string.Format("{0:0000} - {2} logs, name = \"{1}\"", threadData.ThreadId, threadData.ThreadName, threadData.Entries.Length);
+                this.OriginalData = threadData;
+            }
+
+            public static int SortComparer(ListableThreadData item1, ListableThreadData item2)
+            {
+                if (item1.ThreadId < item2.ThreadId) return -1;
+                if (item1.ThreadId == item2.ThreadId) return 0;
+
+                return 1;
+            }
+        }
+
+        private void FillThreadList()
+        {
+            try
+            {
+                this.lstThreadList.SuspendLayout();
+                var currentThreadId = -1;
+                if ((this.lstThreadList.Items.Count > 0) && (this.lstThreadList.SelectedItem != null))
+                    currentThreadId = (this.lstThreadList.SelectedItem as ListableThreadData).ThreadId;
+
+                this.lstThreadList.DataSource = null;
+
+                var threads = _filteredEntries.GetThreadDataItems();
+                var threadList = threads.Select(threadData => new ListableThreadData(threadData)).ToList();
+                threadList.Sort(ListableThreadData.SortComparer);
+
+                this.lstThreadList.DisplayMember = "DisplayText";
+                this.lstThreadList.DataSource = threadList;
+
+                for (int i = 0; i < this.lstThreadList.Items.Count; i++)
+                {
+                    if ((this.lstThreadList.Items[i] as ListableThreadData).ThreadId == currentThreadId)
+                    {
+                        this.lstThreadList.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            finally
+            {
+                this.lstThreadList.ResumeLayout();
+            }
+
         }
 
         private static IList<Tuple<string, int, string>> ValidateRegex(IList<string> expressions)
@@ -305,7 +378,7 @@ namespace YalfPerver
             builder.IgnoreCaseInFilter = this.chkIgnoreCase.Checked;
             builder.TimeStampFrom = (String.IsNullOrWhiteSpace(this.txtTimeStampFrom.Text)) ? DateTime.MinValue : DateTime.Parse(this.txtTimeStampFrom.Text);
             builder.TimeStampTo = (String.IsNullOrWhiteSpace(this.txtTimeStampTo.Text)) ? DateTime.MaxValue : DateTime.Parse(this.txtTimeStampTo.Text);
-
+            builder.ThreadId = (this.chkUseThreadGroupDisplay.Checked && (this.lstThreadList.SelectedItem != null)) ? (this.lstThreadList.SelectedItem as ListableThreadData).ThreadId : -1;
             return builder.Build();
         }
 
@@ -413,6 +486,48 @@ namespace YalfPerver
 
             var filters = this.GetFiltersFromUiControls();
             LogFilterFileHandler.Save(this.saveSettingsFileDialog.FileName, filters);
+        }
+
+        private void chkShowRegExHelp_CheckedChanged(object sender, EventArgs e)
+        {
+            this.DisplayRegExHelp(this.chkShowRegExHelp.Checked);
+        }
+
+        private void DisplayRegExHelp(bool displayHelp)
+        {
+            this.tbRegexHelp.Visible = displayHelp;
+
+            var height = (displayHelp) ? this.tbRegexHelp.Top : this.txtStatus.Parent.Height;
+            this.txtStatus.Height = (height - 5) - this.txtStatus.Top;
+            this.tvFilter.Height = this.txtStatus.Bottom - this.tvFilter.Top;
+        }
+
+        private void chkUseThreadGroupDisplay_CheckedChanged(object sender, EventArgs e)
+        {
+            this.DisplayThreadWindow(this.chkUseThreadGroupDisplay.Checked);
+        }
+
+        private void DisplayThreadWindow(bool displayThreadList)
+        {
+            var top = (displayThreadList) ? this.lstThreadList.Bottom + 10 : 3;
+            var heightOffSet = this.tvFilter.Top - top;
+            this.tvFilter.Top = top;
+            this.tvFilter.Height += heightOffSet;
+        }
+
+        private void lstThreadList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_refreshingDisplay)
+                this.DisplayOnlyLogsForSelectedThread();
+        }
+
+        private void DisplayOnlyLogsForSelectedThread()
+        {
+            var data = (this.lstThreadList.SelectedItem as ListableThreadData);
+            if (data == null)
+                return;
+
+            this.RefreshDisplay();
         }
     }
 

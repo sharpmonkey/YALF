@@ -43,22 +43,11 @@ namespace Yalf.Reporting
         public bool SingleLineFormat { get; set; }
         public DateTime TimeStampFrom { get; set; }
         public DateTime TimeStampTo { get; set; }
+        public int ThreadId { get; set; }
 
         public ILogFilters Build()
         {
-            return new LogFilters(IncludedKeysExpressionList,
-                                  ExcludedKeysExpressionList,
-                                  IgnoreCaseInFilter,
-                                  HideEnterMethodLogs,
-                                  HideExitMethodLogs,
-                                  HideTimeStampInMethod,
-                                  HideMethodParameters,
-                                  HideMethodDuration,
-                                  HideMethodReturnValue,
-                                  SingleLineFormat,
-                                  TimeStampFrom,
-                                  TimeStampTo);
-            ;
+            return new LogFilters(IncludedKeysExpressionList, ExcludedKeysExpressionList, IgnoreCaseInFilter, HideEnterMethodLogs, HideExitMethodLogs, HideTimeStampInMethod, HideMethodParameters, HideMethodDuration, HideMethodReturnValue, SingleLineFormat, TimeStampFrom, TimeStampTo, ThreadId);
         }
 
         #region Fluent Interface

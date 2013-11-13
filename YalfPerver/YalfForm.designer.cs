@@ -34,14 +34,19 @@
             this.btnDump = new System.Windows.Forms.Button();
             this.btnClean = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.tbRegexHelp = new System.Windows.Forms.TextBox();
+            this.lblThreadList = new System.Windows.Forms.Label();
+            this.lstThreadList = new System.Windows.Forms.ListBox();
             this.txtStatus = new System.Windows.Forms.TextBox();
             this.txtLogContext = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnCsvDump = new System.Windows.Forms.Button();
             this.txtCsvFolder = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.tbRegexHelp = new System.Windows.Forms.TextBox();
             this.pnlMainOptions = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.chkUseThreadGroupDisplay = new System.Windows.Forms.CheckBox();
+            this.chkShowRegExHelp = new System.Windows.Forms.CheckBox();
             this.lblLastLogEntry = new System.Windows.Forms.Label();
             this.lblFirstLogEntry = new System.Windows.Forms.Label();
             this.txtTimeStampTo = new System.Windows.Forms.TextBox();
@@ -112,15 +117,17 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.tbRegexHelp);
+            this.splitContainer1.Panel1.Controls.Add(this.tvFilter);
+            this.splitContainer1.Panel1.Controls.Add(this.lblThreadList);
+            this.splitContainer1.Panel1.Controls.Add(this.lstThreadList);
             this.splitContainer1.Panel1.Controls.Add(this.txtStatus);
             this.splitContainer1.Panel1.Controls.Add(this.txtLogContext);
             this.splitContainer1.Panel1.Controls.Add(this.label4);
             this.splitContainer1.Panel1.Controls.Add(this.btnCsvDump);
             this.splitContainer1.Panel1.Controls.Add(this.txtCsvFolder);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
-            this.splitContainer1.Panel1.Controls.Add(this.tbRegexHelp);
             this.splitContainer1.Panel1.Controls.Add(this.pnlMainOptions);
-            this.splitContainer1.Panel1.Controls.Add(this.tvFilter);
             // 
             // splitContainer1.Panel2
             // 
@@ -128,6 +135,40 @@
             this.splitContainer1.Size = new System.Drawing.Size(1370, 796);
             this.splitContainer1.SplitterDistance = 686;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // tbRegexHelp
+            // 
+            this.tbRegexHelp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbRegexHelp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbRegexHelp.Font = new System.Drawing.Font("Consolas", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbRegexHelp.Location = new System.Drawing.Point(3, 534);
+            this.tbRegexHelp.Multiline = true;
+            this.tbRegexHelp.Name = "tbRegexHelp";
+            this.tbRegexHelp.ReadOnly = true;
+            this.tbRegexHelp.Size = new System.Drawing.Size(676, 255);
+            this.tbRegexHelp.TabIndex = 12;
+            this.tbRegexHelp.Text = resources.GetString("tbRegexHelp.Text");
+            this.tbRegexHelp.WordWrap = false;
+            // 
+            // lblThreadList
+            // 
+            this.lblThreadList.AutoSize = true;
+            this.lblThreadList.Location = new System.Drawing.Point(363, 3);
+            this.lblThreadList.Name = "lblThreadList";
+            this.lblThreadList.Size = new System.Drawing.Size(46, 13);
+            this.lblThreadList.TabIndex = 29;
+            this.lblThreadList.Text = "Threads";
+            // 
+            // lstThreadList
+            // 
+            this.lstThreadList.FormattingEnabled = true;
+            this.lstThreadList.IntegralHeight = false;
+            this.lstThreadList.Location = new System.Drawing.Point(366, 19);
+            this.lstThreadList.Name = "lstThreadList";
+            this.lstThreadList.Size = new System.Drawing.Size(313, 108);
+            this.lstThreadList.TabIndex = 21;
+            this.lstThreadList.SelectedIndexChanged += new System.EventHandler(this.lstThreadList_SelectedIndexChanged);
             // 
             // txtStatus
             // 
@@ -187,23 +228,11 @@
             this.label3.TabIndex = 13;
             this.label3.Text = "Save folder";
             // 
-            // tbRegexHelp
-            // 
-            this.tbRegexHelp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRegexHelp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbRegexHelp.Font = new System.Drawing.Font("Consolas", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbRegexHelp.Location = new System.Drawing.Point(3, 534);
-            this.tbRegexHelp.Multiline = true;
-            this.tbRegexHelp.Name = "tbRegexHelp";
-            this.tbRegexHelp.ReadOnly = true;
-            this.tbRegexHelp.Size = new System.Drawing.Size(676, 255);
-            this.tbRegexHelp.TabIndex = 12;
-            this.tbRegexHelp.Text = resources.GetString("tbRegexHelp.Text");
-            this.tbRegexHelp.WordWrap = false;
-            // 
             // pnlMainOptions
             // 
+            this.pnlMainOptions.Controls.Add(this.label7);
+            this.pnlMainOptions.Controls.Add(this.chkUseThreadGroupDisplay);
+            this.pnlMainOptions.Controls.Add(this.chkShowRegExHelp);
             this.pnlMainOptions.Controls.Add(this.lblLastLogEntry);
             this.pnlMainOptions.Controls.Add(this.lblFirstLogEntry);
             this.pnlMainOptions.Controls.Add(this.txtTimeStampTo);
@@ -235,12 +264,50 @@
             this.pnlMainOptions.Size = new System.Drawing.Size(362, 457);
             this.pnlMainOptions.TabIndex = 0;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(7, 156);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(74, 13);
+            this.label7.TabIndex = 28;
+            this.label7.Text = "&Included Keys";
+            // 
+            // chkUseThreadGroupDisplay
+            // 
+            this.chkUseThreadGroupDisplay.AutoSize = true;
+            this.chkUseThreadGroupDisplay.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkUseThreadGroupDisplay.Location = new System.Drawing.Point(168, 430);
+            this.chkUseThreadGroupDisplay.Name = "chkUseThreadGroupDisplay";
+            this.chkUseThreadGroupDisplay.Size = new System.Drawing.Size(106, 17);
+            this.chkUseThreadGroupDisplay.TabIndex = 27;
+            this.chkUseThreadGroupDisplay.Text = "&Group by Thread";
+            this.toolTip1.SetToolTip(this.chkUseThreadGroupDisplay, "Gorup logs by thread.  A Thread selection window is displayed when this option is" +
+        " chosen");
+            this.chkUseThreadGroupDisplay.UseVisualStyleBackColor = true;
+            this.chkUseThreadGroupDisplay.CheckedChanged += new System.EventHandler(this.chkUseThreadGroupDisplay_CheckedChanged);
+            // 
+            // chkShowRegExHelp
+            // 
+            this.chkShowRegExHelp.AutoSize = true;
+            this.chkShowRegExHelp.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkShowRegExHelp.Checked = true;
+            this.chkShowRegExHelp.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowRegExHelp.Location = new System.Drawing.Point(153, 155);
+            this.chkShowRegExHelp.Name = "chkShowRegExHelp";
+            this.chkShowRegExHelp.Size = new System.Drawing.Size(113, 17);
+            this.chkShowRegExHelp.TabIndex = 26;
+            this.chkShowRegExHelp.Text = "Show RegEx &Help";
+            this.toolTip1.SetToolTip(this.chkShowRegExHelp, "Turn RegEx help on or off.  Turn off to regain more screen real estate.");
+            this.chkShowRegExHelp.UseVisualStyleBackColor = true;
+            this.chkShowRegExHelp.CheckedChanged += new System.EventHandler(this.chkShowRegExHelp_CheckedChanged);
+            // 
             // lblLastLogEntry
             // 
             this.lblLastLogEntry.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblLastLogEntry.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblLastLogEntry.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.lblLastLogEntry.Location = new System.Drawing.Point(235, 151);
+            this.lblLastLogEntry.Location = new System.Drawing.Point(235, 127);
             this.lblLastLogEntry.Name = "lblLastLogEntry";
             this.lblLastLogEntry.Size = new System.Drawing.Size(121, 13);
             this.lblLastLogEntry.TabIndex = 25;
@@ -251,7 +318,7 @@
             this.lblFirstLogEntry.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblFirstLogEntry.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFirstLogEntry.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.lblFirstLogEntry.Location = new System.Drawing.Point(83, 151);
+            this.lblFirstLogEntry.Location = new System.Drawing.Point(83, 127);
             this.lblFirstLogEntry.Name = "lblFirstLogEntry";
             this.lblFirstLogEntry.Size = new System.Drawing.Size(121, 13);
             this.lblFirstLogEntry.TabIndex = 24;
@@ -259,7 +326,7 @@
             // 
             // txtTimeStampTo
             // 
-            this.txtTimeStampTo.Location = new System.Drawing.Point(235, 130);
+            this.txtTimeStampTo.Location = new System.Drawing.Point(235, 106);
             this.txtTimeStampTo.Name = "txtTimeStampTo";
             this.txtTimeStampTo.Size = new System.Drawing.Size(121, 20);
             this.txtTimeStampTo.TabIndex = 23;
@@ -268,7 +335,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(207, 131);
+            this.label6.Location = new System.Drawing.Point(207, 107);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(25, 13);
             this.label6.TabIndex = 22;
@@ -276,7 +343,7 @@
             // 
             // txtTimeStampFrom
             // 
-            this.txtTimeStampFrom.Location = new System.Drawing.Point(83, 130);
+            this.txtTimeStampFrom.Location = new System.Drawing.Point(83, 106);
             this.txtTimeStampFrom.Name = "txtTimeStampFrom";
             this.txtTimeStampFrom.Size = new System.Drawing.Size(121, 20);
             this.txtTimeStampFrom.TabIndex = 21;
@@ -285,7 +352,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 133);
+            this.label5.Location = new System.Drawing.Point(3, 109);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(79, 13);
             this.label5.TabIndex = 20;
@@ -293,7 +360,7 @@
             // 
             // btnSaveFilters
             // 
-            this.btnSaveFilters.Location = new System.Drawing.Point(86, 426);
+            this.btnSaveFilters.Location = new System.Drawing.Point(86, 381);
             this.btnSaveFilters.Name = "btnSaveFilters";
             this.btnSaveFilters.Size = new System.Drawing.Size(75, 23);
             this.btnSaveFilters.TabIndex = 18;
@@ -303,7 +370,7 @@
             // 
             // btnLoadFilters
             // 
-            this.btnLoadFilters.Location = new System.Drawing.Point(5, 426);
+            this.btnLoadFilters.Location = new System.Drawing.Point(5, 381);
             this.btnLoadFilters.Name = "btnLoadFilters";
             this.btnLoadFilters.Size = new System.Drawing.Size(75, 23);
             this.btnLoadFilters.TabIndex = 17;
@@ -315,7 +382,7 @@
             // 
             this.chkSingleLineFormat.AutoSize = true;
             this.chkSingleLineFormat.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkSingleLineFormat.Location = new System.Drawing.Point(37, 62);
+            this.chkSingleLineFormat.Location = new System.Drawing.Point(47, 430);
             this.chkSingleLineFormat.Name = "chkSingleLineFormat";
             this.chkSingleLineFormat.Size = new System.Drawing.Size(113, 17);
             this.chkSingleLineFormat.TabIndex = 16;
@@ -329,7 +396,7 @@
             this.chkHideMethodReturnValue.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkHideMethodReturnValue.Checked = true;
             this.chkHideMethodReturnValue.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkHideMethodReturnValue.Location = new System.Drawing.Point(173, 84);
+            this.chkHideMethodReturnValue.Location = new System.Drawing.Point(173, 60);
             this.chkHideMethodReturnValue.Name = "chkHideMethodReturnValue";
             this.chkHideMethodReturnValue.Size = new System.Drawing.Size(145, 17);
             this.chkHideMethodReturnValue.TabIndex = 7;
@@ -342,7 +409,7 @@
             this.chkHodeMethodParameters.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkHodeMethodParameters.Checked = true;
             this.chkHodeMethodParameters.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkHodeMethodParameters.Location = new System.Drawing.Point(9, 84);
+            this.chkHodeMethodParameters.Location = new System.Drawing.Point(9, 60);
             this.chkHodeMethodParameters.Name = "chkHodeMethodParameters";
             this.chkHodeMethodParameters.Size = new System.Drawing.Size(141, 17);
             this.chkHodeMethodParameters.TabIndex = 6;
@@ -355,7 +422,7 @@
             this.chkHideDuration.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkHideDuration.Checked = true;
             this.chkHideDuration.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkHideDuration.Location = new System.Drawing.Point(59, 106);
+            this.chkHideDuration.Location = new System.Drawing.Point(59, 82);
             this.chkHideDuration.Name = "chkHideDuration";
             this.chkHideDuration.Size = new System.Drawing.Size(91, 17);
             this.chkHideDuration.TabIndex = 8;
@@ -368,7 +435,7 @@
             this.chkHideTimestamp.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkHideTimestamp.Checked = true;
             this.chkHideTimestamp.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkHideTimestamp.Location = new System.Drawing.Point(216, 106);
+            this.chkHideTimestamp.Location = new System.Drawing.Point(216, 82);
             this.chkHideTimestamp.Name = "chkHideTimestamp";
             this.chkHideTimestamp.Size = new System.Drawing.Size(102, 17);
             this.chkHideTimestamp.TabIndex = 9;
@@ -411,7 +478,7 @@
             // 
             // ExcludedKeyList
             // 
-            this.ExcludedKeyList.Location = new System.Drawing.Point(5, 328);
+            this.ExcludedKeyList.Location = new System.Drawing.Point(5, 285);
             this.ExcludedKeyList.Multiline = true;
             this.ExcludedKeyList.Name = "ExcludedKeyList";
             this.ExcludedKeyList.Size = new System.Drawing.Size(352, 92);
@@ -420,7 +487,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 312);
+            this.label2.Location = new System.Drawing.Point(3, 263);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 13);
             this.label2.TabIndex = 12;
@@ -428,7 +495,7 @@
             // 
             // IncludedKeyList
             // 
-            this.IncludedKeyList.Location = new System.Drawing.Point(5, 190);
+            this.IncludedKeyList.Location = new System.Drawing.Point(5, 172);
             this.IncludedKeyList.Multiline = true;
             this.IncludedKeyList.Name = "IncludedKeyList";
             this.IncludedKeyList.Size = new System.Drawing.Size(352, 92);
@@ -437,7 +504,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 196);
+            this.label1.Location = new System.Drawing.Point(3, 172);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(140, 13);
             this.label1.TabIndex = 10;
@@ -467,7 +534,7 @@
             // 
             this.chkIgnoreCase.AutoSize = true;
             this.chkIgnoreCase.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkIgnoreCase.Location = new System.Drawing.Point(274, 171);
+            this.chkIgnoreCase.Location = new System.Drawing.Point(274, 155);
             this.chkIgnoreCase.Name = "chkIgnoreCase";
             this.chkIgnoreCase.Size = new System.Drawing.Size(83, 17);
             this.chkIgnoreCase.TabIndex = 14;
@@ -501,19 +568,18 @@
             // 
             // tvFilter
             // 
-            this.tvFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tvFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tvFilter.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tvFilter.CheckBoxes = true;
-            this.tvFilter.Location = new System.Drawing.Point(366, -2);
+            this.tvFilter.Location = new System.Drawing.Point(366, 136);
             this.tvFilter.Name = "tvFilter";
             treeNode1.Checked = true;
             treeNode1.Name = "Node0";
             treeNode1.Text = "Node0";
             this.tvFilter.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1});
-            this.tvFilter.Size = new System.Drawing.Size(313, 530);
+            this.tvFilter.Size = new System.Drawing.Size(313, 401);
             this.tvFilter.TabIndex = 4;
             this.tvFilter.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tvFilter_AfterCheck);
             this.tvFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tvFilter_KeyDown);
@@ -592,5 +658,10 @@
         private System.Windows.Forms.Label lblLastLogEntry;
         private System.Windows.Forms.Label lblFirstLogEntry;
         private System.Windows.Forms.TextBox txtStatus;
+        private System.Windows.Forms.CheckBox chkShowRegExHelp;
+        private System.Windows.Forms.CheckBox chkUseThreadGroupDisplay;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblThreadList;
+        private System.Windows.Forms.ListBox lstThreadList;
     }
 }

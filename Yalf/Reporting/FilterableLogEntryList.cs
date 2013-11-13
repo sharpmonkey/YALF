@@ -94,6 +94,11 @@ namespace Yalf.Reporting
             return new ReadOnlyCollection<BaseEntry>(_logEntries.ToList());
         }
 
+        public IList<ThreadData> GetThreadDataItems()
+        {
+            return new ReadOnlyCollection<ThreadData>(_logEntries.OfType<ThreadData>().ToList());
+        }
+
         public IList<KeyValuePair<string, bool>> GetItemCheckedStateList()
         {
             return _flags.ToList();

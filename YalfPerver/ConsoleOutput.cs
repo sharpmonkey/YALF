@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace YalfPerver
@@ -20,6 +19,13 @@ namespace YalfPerver
             }
 
             WriteToOutput(text);
+        }
+
+        public void GoToStartOfList()
+        {
+            // todo: this only works if the control has focus, which is not necessarily a desirable state (e.g. after load we may want to stay focused on another control)
+            // need to find a way to make this work when the control does not have focus - probably an api call
+            this.tbConsole.SelectionStart = 0;
         }
 
         private void WriteToOutput(string text)

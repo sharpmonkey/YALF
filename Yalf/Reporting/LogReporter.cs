@@ -74,6 +74,9 @@ namespace Yalf.Reporting
 
         private void HandleThreadChange(ThreadData entry)
         {
+            if ((this.LogEntries.Filters.ThreadId > 0) && (entry.ThreadId != this.LogEntries.Filters.ThreadId))
+                return;
+
             this.OutputHandler.HandleThread(entry);
 
             if (entry.Entries != null && entry.Entries.Any())
