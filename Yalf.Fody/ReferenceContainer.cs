@@ -12,6 +12,7 @@ namespace Yalf.Fody
         public readonly MethodReference MethodContextMethod;
         public readonly MethodReference TraceExceptionMethod;
         public readonly MethodReference DisposeMethod;
+        public readonly MethodReference PreserveStackTraceMethod;
         public readonly Func<TypeReference, MethodReference> CreateRecordReturnMethod;
 
         public ReferenceContainer(ModuleDefinition moduleDefinition, IAssemblyResolver assemblyResolver)
@@ -45,6 +46,7 @@ namespace Yalf.Fody
             LogType = moduleDefinition.Import(logType);
             IContextType = moduleDefinition.Import(iContextType);
             ExceptionType = moduleDefinition.Import(exceptionType);
+            PreserveStackTraceMethod = moduleDefinition.Import(iContextType.Methods.Single(m => m.Name == "PreserveStackTrace"));
         }
     }
 }

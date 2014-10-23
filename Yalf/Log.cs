@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using ProtoBuf;
 using Yalf.LogEntries;
@@ -338,6 +340,7 @@ namespace Yalf
         private class ContextScope : IContext
         {
             private readonly Action<object, bool> _onDispose;
+
             private bool _returnRecorded = false;
             private object _value;
 
@@ -360,6 +363,24 @@ namespace Yalf
                 _onDispose(_value, _returnRecorded);
             }
 
+            public void PreserveStackTrace(Exception ex)
+            {
+                _preserveStackTraceAction(ex);
+            }
+
+            private static readonly Action<Exception> _preserveStackTraceAction = GetPreserveStackTraceAction();
+
+            private static Action<Exception> GetPreserveStackTraceAction()
+            {
+                var exceptionType = typeof(Exception);
+                var parameter = Expression.Parameter(exceptionType, "ex");
+
+                var preserveMethod = exceptionType.GetMethod("InternalPreserveStackTrace", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                var preserveCall = Expression.Call(parameter, preserveMethod);
+
+                return Expression.Lambda<Action<Exception>>(preserveCall, parameter).Compile();
+            }
         }
 
         private class EmptyContext : IContext
@@ -369,6 +390,8 @@ namespace Yalf
             private EmptyContext() { }
 
             public void Dispose() { }
+
+            public void PreserveStackTrace(Exception ex) { }
 
             public T RecordReturn<T>(T value) { return value; }
         }

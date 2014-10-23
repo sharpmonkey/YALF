@@ -93,9 +93,16 @@ namespace Yalf.Fody
         {
             /*
                 stloc.2 
+             
                 nop 
                 ldloc.2 
                 call void [Yalf]Yalf.Log::TraceException(class [mscorlib]System.Exception)
+                
+                nop 
+                ldloc.0 
+                ldloc.2 
+                callvirt   instance void [Yalf]Yalf.IContext::PreserveStackTrace(class [mscorlib]System.Exception)
+             
                 nop 
                 rethrow  
              */
@@ -104,9 +111,16 @@ namespace Yalf.Fody
             body.Variables.Add(exceptionVariable);
 
             var beginCatch = beforeReturn.Prepend(processor.Create(OpCodes.Stloc, exceptionVariable), processor);
-            beginCatch.Append(processor.Create(OpCodes.Nop), processor)
+            beginCatch.Append(
+                           processor.Create(OpCodes.Nop), processor)
                           .AppendLdloc(processor, exceptionVariable.Index)
                           .Append(processor.Create(OpCodes.Call, references.TraceExceptionMethod), processor)
+
+                          .Append(processor.Create(OpCodes.Nop), processor)
+                          .AppendLdloc(processor, contextVar.Index)
+                          .AppendLdloc(processor, exceptionVariable.Index)
+                          .Append(processor.Create(OpCodes.Callvirt, references.PreserveStackTraceMethod), processor)
+
                           .Append(processor.Create(OpCodes.Nop), processor)
                           .Append(processor.Create(OpCodes.Rethrow), processor);
 

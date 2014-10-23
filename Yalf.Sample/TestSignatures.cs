@@ -16,6 +16,7 @@ namespace Yalf.Sample
             catch (Exception ex)
             {
                 Log.TraceException(ex);
+                context.PreserveStackTrace(ex);
                 throw;
             }
             finally

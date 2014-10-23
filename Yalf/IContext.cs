@@ -6,5 +6,6 @@ namespace Yalf
     {
         T RecordReturn<T>(T value);
         void Dispose();
+        void PreserveStackTrace(Exception ex);
     }
 }
