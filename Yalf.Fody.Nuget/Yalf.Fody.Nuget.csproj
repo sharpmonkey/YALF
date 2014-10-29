@@ -9,13 +9,17 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <OutputDir>$(SolutionDir)NuGetBuild.Yalf.Fody\</OutputDir>
     <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>35e9aec3</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
   </PropertyGroup>
   <ItemGroup>
     <None Include="install.ps1" />
-    <None Include="Yalf.Fody.nuspec" />
+    <None Include="packages.config" />
+    <None Include="Yalf.Fody.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="uninstall.ps1" />
   </ItemGroup>
   <ItemGroup>
@@ -40,7 +44,6 @@
   </Target>
   <Target Name="Build" DependsOnTargets="NuGetBuild" />
   <Target Name="ReBuild" DependsOnTargets="NuGetBuild" />
-  <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
   <Target Name="NuGetBuild" DependsOnTargets="Clean">
     <MakeDir Directories="$(OutputDir)" />
     <Copy SourceFiles="$(ProjectDir)Yalf.Fody.nuspec" DestinationFolder="$(OutputDir)" />
@@ -54,4 +57,11 @@
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(OutputDir)" MetadataAssembly="$(SolutionDir)Yalf_PCL\bin\$(ConfigurationName)\Yalf.dll" />
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\PepitaPackage.1.21.3\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.3\build\PepitaPackage.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\PepitaPackage.1.21.3\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.3\build\PepitaPackage.targets'))" />
+  </Target>
 </Project>
