@@ -17,16 +17,17 @@ namespace YalfPerver
     {
         private const String TIMESTAMP_FORMAT = "d/M/yy HH:mm:ss.fff";
 
-        private enum OptionGlyph { open = 224, close = 223 }
-
-        //private readonly LogPrinter _logPrinter = new LogPrinter();
         private FilterableLogEntryList _filteredEntries;
         private bool _selectAllNodes = false;
+        private readonly string _openFilename;
         // TODO: add save/load buttons for saving dumps and later analysis
 
-        public YalfForm()
+        public YalfForm(string[] args)
         {
             InitializeComponent();
+
+            if (args != null && args.Any())
+                _openFilename = args[0];
         }
 
         private void btnDump_Click(object sender, EventArgs e)
@@ -39,7 +40,19 @@ namespace YalfPerver
             this.lblFirstLogEntry.BorderStyle = BorderStyle.None;
             this.lblLastLogEntry.BorderStyle = BorderStyle.None;
 
-            this.InitialiseLogEntryDisplay(this.GetCurrentYalfEntries());
+            if (!string.IsNullOrWhiteSpace(_openFilename) && File.Exists(_openFilename))
+            {
+                var filename = _openFilename.Trim();
+                var binData = File.ReadAllBytes(filename);
+                var dump = Yalf.Log.DumpFromBinary(binData);
+                this.InitialiseLogEntryDisplay(dump);
+
+                this.Text = filename;
+            }
+            else
+            {
+                this.InitialiseLogEntryDisplay(this.GetCurrentYalfEntries());
+            }
 
             this.DisplayRegExHelp(this.chkShowRegExHelp.Checked);
             this.DisplayThreadWindow(this.chkUseThreadGroupDisplay.Checked);

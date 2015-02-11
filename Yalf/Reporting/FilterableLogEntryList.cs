@@ -38,6 +38,8 @@ namespace Yalf.Reporting
             this.Filters = filters;
 
             this.CalculateStartAndEndTimes();
+
+            this.SetupFilterList();
         }
 
         private void CalculateStartAndEndTimes()
@@ -102,6 +104,11 @@ namespace Yalf.Reporting
         public IList<KeyValuePair<string, bool>> GetItemCheckedStateList()
         {
             return _flags.ToList();
+        }
+
+        public bool GetAnyItemChecked()
+        {
+            return _flags.Any(f => f.Value);
         }
 
         public Dictionary<string, bool> GetItemCheckedStateDictionary()

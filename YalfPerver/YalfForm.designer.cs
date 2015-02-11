@@ -132,7 +132,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.consoleOutput);
-            this.splitContainer1.Size = new System.Drawing.Size(1370, 796);
+            this.splitContainer1.Size = new System.Drawing.Size(1370, 738);
             this.splitContainer1.SplitterDistance = 686;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -142,11 +142,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbRegexHelp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbRegexHelp.Font = new System.Drawing.Font("Consolas", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbRegexHelp.Location = new System.Drawing.Point(3, 534);
+            this.tbRegexHelp.Location = new System.Drawing.Point(3, 491);
             this.tbRegexHelp.Multiline = true;
             this.tbRegexHelp.Name = "tbRegexHelp";
             this.tbRegexHelp.ReadOnly = true;
-            this.tbRegexHelp.Size = new System.Drawing.Size(676, 255);
+            this.tbRegexHelp.Size = new System.Drawing.Size(676, 240);
             this.tbRegexHelp.TabIndex = 12;
             this.tbRegexHelp.Text = resources.GetString("tbRegexHelp.Text");
             this.tbRegexHelp.WordWrap = false;
@@ -181,7 +181,7 @@
             this.txtStatus.Multiline = true;
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtStatus.Size = new System.Drawing.Size(356, 20);
+            this.txtStatus.Size = new System.Drawing.Size(356, 0);
             this.txtStatus.TabIndex = 20;
             // 
             // txtLogContext
@@ -579,7 +579,7 @@
             treeNode1.Text = "Node0";
             this.tvFilter.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1});
-            this.tvFilter.Size = new System.Drawing.Size(313, 401);
+            this.tvFilter.Size = new System.Drawing.Size(313, 343);
             this.tvFilter.TabIndex = 4;
             this.tvFilter.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tvFilter_AfterCheck);
             this.tvFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tvFilter_KeyDown);
@@ -589,14 +589,14 @@
             this.consoleOutput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.consoleOutput.Location = new System.Drawing.Point(0, 0);
             this.consoleOutput.Name = "consoleOutput";
-            this.consoleOutput.Size = new System.Drawing.Size(676, 792);
+            this.consoleOutput.Size = new System.Drawing.Size(676, 734);
             this.consoleOutput.TabIndex = 0;
             // 
             // YalfForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1370, 808);
+            this.ClientSize = new System.Drawing.Size(1370, 750);
             this.Controls.Add(this.splitContainer1);
             this.KeyPreview = true;
             this.Name = "YalfForm";
